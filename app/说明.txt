@@ -1,0 +1,5 @@
+static ：放静态资源
+templates：放模版
+main：主文件
+models：数据库模型
+

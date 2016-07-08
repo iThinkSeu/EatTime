@@ -1,0 +1,2 @@
+app 文件夹：放Flask相关程序
+migration：放数据库迁移相关（暂时不用）

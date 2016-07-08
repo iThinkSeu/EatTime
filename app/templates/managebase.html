@@ -1,0 +1,204 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>微软学生俱乐部管理系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="renderer" content="webkit"/>
+    <link href="static/stylesheets/bootstrap.min.css" rel="stylesheet"/>
+    <link href="static/stylesheets/animate.css" rel="stylesheet"/>
+    <link href="{{ url_for('static', filename="stylesheets/style1.css") }}"  rel="stylesheet"/>
+    
+    <style type="text/css">
+
+        td {
+            text-align:center;
+        }
+    </style>
+</head>
+<body>
+    <div id="wrapper">
+        <nav class="navbar-default navbar-static-side" role="navigation">
+            <div class="sidebar-collapse">
+                <ul class="nav" id="side-menu">
+                    <li style="text-align:center">
+                        <button type="button" class="btn btn-sm btn-success" style="background-color:#1AB394" onclick="window.location.href='http://www.baidu.com'">返回前台首页</button> 
+                    </li>
+                    <li class="nav-header">
+
+                        <div class="dropdown profile-element"> <span>
+                            <img alt="image" class="img-circle" height="70" width="70" id="cover" src={{url_for('static',filename = "images/profile_small.jpg")}}/>
+                             </span>
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="index.aspx#" >
+                                <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">
+                                   当前用户</strong>
+                             </span> 
+                            <span class="text-muted text-xs block"> {{userinfo}}  <b class="caret"></b></span> 
+                            </span>
+                            </a>
+                            <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                                <li>
+                                    <a href="profile.aspx" id="logininfo">个人资料</a>
+                                </li>
+                                <li class="divider"></li>
+                                <li><a href="../login.aspx">安全退出</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="logo-element">
+                            东南大学微软俱乐部
+                      </div>
+
+                    </li>
+
+                    <li id="dlgl" visible="false" >
+                        <a href="index.aspx"><span class="nav-label">登录管理</span></a>
+                        <ul class="nav nav-second-level">
+                            <li ><a id="usermanager" href="javascript:linkto(1)">管理员账号管理</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li id="zjyq" visible="false"  >
+                        <a href="index.aspx"> <span class="nav-label">成员介绍</span></a>
+                        <ul class="nav nav-second-level">
+                            <li><a id="xxzx"  href="javascript:linkto(11)">主席团</a>
+                            </li>
+                            <li><a id="cyinfo" href="javascript:linkto(11)">宣传部</a>
+                            </li>
+                            <li><a id="szyq" href="javascript:linkto(11)">活动部</a>
+                            </li>
+                            <li><a id="szyq" href="javascript:linkto(11)">技术部</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li id="zscy" visible="false" >
+                        <a href="index.aspx"> <span class="nav-label">活动介绍</span></a>
+                        <ul class="nav nav-second-level">
+                            <li><a id="zxhd"  href="javascript:linkto(11)">招新活动</a>
+                            </li>
+                            <li><a id="jsfx"  href="javascript:linkto(11)">技术分享</a>
+                            </li>
+                        </ul>
+                    </li>
+            
+               
+                   
+              </ul>
+          </div>   
+      </nav>
+
+       <div id="page-wrapper" class="gray-bg dashbard-1">
+            <div class="row border-bottom">
+                <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0; top: 0px; left: 0px;">
+                    <div class="navbar-header">
+                        <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#">〓</a>
+                    </div>
+                    <ul class="nav navbar-top-links navbar-right">
+                        <li>
+                            <span class="m-r-sm text-muted welcome-message"><a href="index.aspx"  title="返回首页">●</a>东南大学微软俱乐部管理系统</span>
+                        </li>
+                        <li>
+                            <a href="../login.aspx" >
+                                ◆ 退出
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            
+            <div id="content" style="margin-left:0px">
+              <%-body%>
+            </div>
+       </div>
+</div>
+    <script src={{ url_for('static', filename='javascripts/jquery-2.1.1.min.js') }} tppabs="http://www.zi-han.net/theme/hplus/js/jquery-2.1.1.min.js"></script>   
+    <script src={{url_for('static', filename='javascripts/bootstrap.min.js')}} tppabs="http://www.zi-han.net/theme/hplus/js/bootstrap.min.js?v=3.4.0"></script>
+    <script src={{url_for('static', filename='javascripts/jquery.metisMenu.js')}} tppabs="http://www.zi-han.net/theme/hplus/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+   <!-- <script src="js/plugins/slimscroll/jquery.slimscroll.min.js" tppabs="http://www.zi-han.net/theme/hplus/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>-->
+
+    
+    
+
+    <!-- Custom and plugin javascript -->
+    <script src={{url_for('static', filename='javascripts/hplus.js')}}></script>
+    <script src={{url_for('static', filename='javascripts/pace.min.js')}}></script>
+
+    <!-- jQuery UI
+    <script src="js/plugins/jquery-ui/jquery-ui.min.js" ></script> -->
+  <script src={{url_for('static', filename='javascripts/My97DatePicker/WdatePicker.js')}}></script>
+ 
+   
+    <script type="text/javascript">
+    /*  $(function(){
+   $('#form1').submit(function(){
+   $.get('/addUser',"{name:'zrr'}",function(data){alert(data);$("#content").html(data)});
+   });
+   });*/
+     function ValidateValue(textbox) {
+            var IllegalString = "\`~@#;,.!#$%^&*()+{}|\\:\"<>?-=/,\'";
+            var textboxvalue = textbox.value;
+            var index = textboxvalue.length - 1;
+
+            var s = textbox.value.charAt(index);
+
+            if (IllegalString.indexOf(s) >= 0) {
+                s = textboxvalue.substring(0, index);
+                textbox.value = s;
+            }
+        }
+        
+ function linkto(num){
+     /*var a1=window.location.host;
+      var a2="http://"+a1+"/userManage";
+      alert(a2);
+	window.location.assign(a2);*/
+    $.get('userManage.html',
+    function(data){
+    //alert(data);
+    $("#content").html(data);
+    });
+    
+      
+ }
+ 
+  function addUser(){
+    /*  var a1=window.location.host;
+      var a2="http://"+a1+"/userManage";
+	window.location.assign(a2);*/
+    $.get('addUser.html',function(data){
+    //alert(data);
+    $("#content").html(data)
+    });
+   
+      
+ }
+
+	function saveUser ()
+   {                                                  
+     var userinfo={name:$("#name").val(),
+               logname:$('#logname').val(),  
+                password:$('#password').val(),
+                password2:$('#password2').val(),
+                 phone:$('#phone').val(),
+                 email:$('#email').val(),
+                 company:$('#company').val()};
+      $.post('/addUser',userinfo,function(data){
+      //alert(data);
+    if(data==="exists")
+       alert("用户已存在！");
+    else
+   { 
+   alert("添加成功！");
+    $("#content").html(data);
+    }
+     });
+  return false;                         
+  }                              
+ 
+
+	</script> 
+    
+      
+    
+</body>
+</html>
