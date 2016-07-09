@@ -18,6 +18,13 @@ if __name__ == '__main__':
 	manager = Manager(app)
 	manager.add_command('db',MigrateCommand)
 
+"""
+app = Flask(__name__)
+
+app.config['SQLALCHEMY_DATABASE_URI']=sqlurl
+
+db = SQLAlchemy(app)
+"""
 
 class User(db.Model):
 	__tablename__ = "users"
@@ -26,7 +33,7 @@ class User(db.Model):
 	password = db.Column(db.String(32))
 	token = db.Column(db.String(32))
 	measuredatas = db.relationship('Measuredata',backref = 'instrument', lazy = 'dynamic')
-
+	foods = db.relationship('food',backref = 'foodauthor', lazy = 'dynamic')
 	def add(self):
 		try:
 			tempuser = User.query.filter_by(username=self.username).first()
@@ -63,7 +70,36 @@ class User(db.Model):
 			print e
 			db.session.rollback()
 			return 2	
-
+	def publishfood(self,food):
+		try:
+			food.foodauthor = self
+			db.session.add(food)
+			db.session.execute('set names utf8mb4')
+			db.session.commit()
+			return 0
+		except Exception, e:
+			print e
+			db.session.rollback()
+			return 2	
+class customerUser(db.Model):
+	__tablename__ = "customerusers"
+	id = db.Column(db.Integer,primary_key=True)
+	username = db.Column(db.String(32),unique = True)
+	password = db.Column(db.String(32))
+	token = db.Column(db.String(32))
+	def add(self):
+		try:
+			tempuser = User.query.filter_by(username=self.username).first()
+			if tempuser is None:
+				db.session.add(self)
+				db.session.commit()
+				return 0
+			else:
+				return 1
+		except Exception, e:
+			print e
+			db.session.rollback()
+			return 2
 class Measuredata(db.Model):
 	__tablename__ = "messuredatas"
 	id = db.Column(db.Integer,primary_key = True)
@@ -80,6 +116,16 @@ class Measuredata(db.Model):
 			print e
 			db.session.rollback()
 			return 2
+
+class food(db.Model):
+	__tablename__ = "foods"
+	id = db.Column(db.Integer,primary_key = True)
+	authorid = db.Column(db.Integer,db.ForeignKey('users.id'))
+	name = db.Column(db.String(32))
+	discription = db.Column(db.String(256))
+	price = db.Column(db.Float)
+	timestamp = db.Column(db.DateTime, default = datetime.now)
+	monthsales = db.Column(db.Integer)
 
 def getuserinformation(token):
 	u=User.query.filter_by(token=token).first()
