@@ -1,3 +1,4 @@
+#-*- coding: UTF-8 -*- 
 from flask import request
 from flask import render_template
 from flask import redirect
@@ -12,7 +13,7 @@ import string;
 import datetime
 from dbSetting import create_app,db
 
-from loginRegister import loginRegister_route
+from route.loginRegister import loginRegister_route
 
 app = create_app()
 
@@ -21,7 +22,7 @@ app.register_blueprint(loginRegister_route)  			#注册与登录
 
 
 if __name__ == '__main__':
-	app.run(host=os.getenv('IP','0.0.0.0'),port=int(os.getenv('PORT',8080)))
+	app.run(host=os.getenv('IP','0.0.0.0'),port=int(os.getenv('PORT',8080)),debug = True)
 
 
 

@@ -1,11 +1,13 @@
 #-*- coding: UTF-8 -*- 
 from flask import Blueprint
 from flask import request,jsonify,json
-from models import *
-from hashmd5 import *
-from sendMsg import *
 import traceback
 import sys
+sys.path.append("..")
+from models import *
+from functions.hashmd5 import *
+from functions.sendMsg import *
+
 
 loginRegister_route = Blueprint('loginRegister', __name__)
 
@@ -260,7 +262,7 @@ def appregister():
 	response = jsonify({'state':state,'reason':reason,'token':token,'id':id})
 	return response
 
-@app.route("/applogin",methods=['POST'])
+@loginRegister_route.route("/applogin",methods=['POST'])
 def applogin():
 	try:
 		username = request.json['username']
@@ -280,6 +282,8 @@ def applogin():
 	except Exception, e:
 		print "login error!!"
 		print e
+		username = ''
+		password = ''
 		state = 'fail'
 		reason='服务器异常'
 		token = 'None'

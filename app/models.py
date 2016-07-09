@@ -1,23 +1,23 @@
-
+#-*- coding: UTF-8 -*- 
 from flask import Flask
-from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.sqlalchemy import SQLAlchemy 
 from flask.ext.script import Manager
 from flask.ext.migrate import Migrate, MigrateCommand
 from datetime import *
 from sqlalchemy import or_
 from sqlalchemy import and_
+from dbSetting import create_app,db,sqlurl 
 
-#from flask.ext.sqlalchemy import SQLALchemy
 
-app = Flask(__name__)
+#数据库升级时需要使用，平常不执行下面代码，创建app
+if __name__ == '__main__':
+	app = Flask(__name__)
+	app.config['SQLALCHEMY_DATABASE_URI']=sqlurl
+	db.init_app(app)
+	migrage = Migrate(app,db)
+	manager = Manager(app)
+	manager.add_command('db',MigrateCommand)
 
-#app.config['SQLALCHEMY_DATABASE_URI']="mysql://root:0596@223.3.56.220:3306/dataserverble?charset=utf8"
-app.config['SQLALCHEMY_DATABASE_URI']="mysql://root:root@127.0.0.1:3306/dataserverble?charset=utf8"
-
-db = SQLAlchemy(app)
-migrage = Migrate(app,db)
-manager = Manager(app)
-manager.add_command('db',MigrateCommand)
 
 class User(db.Model):
 	__tablename__ = "users"
