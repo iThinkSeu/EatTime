@@ -26,6 +26,30 @@ app.config['SQLALCHEMY_DATABASE_URI']=sqlurl
 db = SQLAlchemy(app)
 """
 
+#订单关系表
+class orderList(db.Model):
+	__tablename__ = "orderlists"
+	id = db.Column(db.Integer,primary_key = True)
+	orderid = db.Column(db.Integer,db.ForeignKey('customerusers.id'),primary_key=True)
+	orderedid = db.Column(db.Integer,db.ForeignKey('users.id'), primary_key=True)
+	ordertime = db.Column(db.DateTime, default = datetime.now)
+	peoplenumber = db.Column(db.Integer)
+	price = db.Column(db.Float)
+	payprice = db.Column(db.Float)
+	paystate = db.Column(db.Boolean)
+	paytime = db.Column(db.DateTime)
+	#订单包含哪些食物
+	#foodincludes =  db.relationship('orderListDetail', foreign_keys = [orderListDetail.orderlistid], backref = db.backref('orderlist', lazy='joined'), lazy='dynamic', cascade = 'all, delete-orphan')	
+	def add(self):
+		try:
+			db.session.add(self)
+			db.session.execute('set names utf8mb4')
+			db.session.commit()
+		except Exception, e:
+			print e
+			db.session.rollback()
+			return 2
+
 class User(db.Model):
 	__tablename__ = "users"
 	id = db.Column(db.Integer,primary_key=True)
@@ -34,6 +58,8 @@ class User(db.Model):
 	token = db.Column(db.String(32))
 	measuredatas = db.relationship('Measuredata',backref = 'instrument', lazy = 'dynamic')
 	foods = db.relationship('food',backref = 'foodauthor', lazy = 'dynamic')
+	beordered =  db.relationship('orderList', foreign_keys = [orderList.orderedid], backref = db.backref('beordereduser', lazy='joined'), lazy='dynamic', cascade = 'all, delete-orphan')
+
 	def add(self):
 		try:
 			tempuser = User.query.filter_by(username=self.username).first()
@@ -87,6 +113,8 @@ class customerUser(db.Model):
 	username = db.Column(db.String(32),unique = True)
 	password = db.Column(db.String(32))
 	token = db.Column(db.String(32))
+	order =  db.relationship('orderList', foreign_keys = [orderList.orderid], backref = db.backref('orderuser', lazy='joined'), lazy='dynamic', cascade = 'all, delete-orphan')
+
 	def add(self):
 		try:
 			tempuser = User.query.filter_by(username=self.username).first()
