@@ -9,6 +9,12 @@ from sqlalchemy import and_
 from dbSetting import create_app,db,sqlurl 
 
 
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI']=sqlurl
+db = SQLAlchemy(app)
+
+
 #数据库升级时需要使用，平常不执行下面代码，创建app
 if __name__ == '__main__':
 	app = Flask(__name__)
@@ -18,14 +24,25 @@ if __name__ == '__main__':
 	manager = Manager(app)
 	manager.add_command('db',MigrateCommand)
 
-"""
-app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI']=sqlurl
 
-db = SQLAlchemy(app)
-"""
-
+#订单详情关系表
+class orderListDetail(db.Model):
+	__tablename__ = "orderListDetails"
+	id = db.Column(db.Integer,primary_key = True)
+	orderlistid = db.Column(db.Integer,db.ForeignKey('orderlists.id'),primary_key = True)
+	foodid = db.Column(db.Integer,db.ForeignKey('foods.id'),primary_key = True)
+	number = db.Column(db.Integer)
+	timestamp = db.Column(db.DateTime,default = datetime.now)
+	def add(self):
+		try:
+			db.session.add(self)
+			db.session.execute('set names utf8mb4')
+			db.session.commit()
+		except Exception, e:
+			print e
+			db.session.rollback()
+			return 2
 #订单关系表
 class orderList(db.Model):
 	__tablename__ = "orderlists"
@@ -39,7 +56,7 @@ class orderList(db.Model):
 	paystate = db.Column(db.Boolean)
 	paytime = db.Column(db.DateTime)
 	#订单包含哪些食物
-	#foodincludes =  db.relationship('orderListDetail', foreign_keys = [orderListDetail.orderlistid], backref = db.backref('orderlist', lazy='joined'), lazy='dynamic', cascade = 'all, delete-orphan')	
+	foodincludes =  db.relationship('orderListDetail', foreign_keys = [orderListDetail.orderlistid], backref = db.backref('orderlist', lazy='joined'), lazy='dynamic', cascade = 'all, delete-orphan')	
 	def add(self):
 		try:
 			db.session.add(self)
@@ -49,7 +66,16 @@ class orderList(db.Model):
 			print e
 			db.session.rollback()
 			return 2
-
+	def addfood(self,food):
+		try:
+			lp = orderListDetail(orderlistid = self.id, foodid = food.id)
+			db.session.add(lp)
+			db.session.commit()
+			return 0
+		except Exception, e:
+			print e
+			db.session.rollback()
+			return 2
 class User(db.Model):
 	__tablename__ = "users"
 	id = db.Column(db.Integer,primary_key=True)
@@ -113,6 +139,7 @@ class customerUser(db.Model):
 	username = db.Column(db.String(32),unique = True)
 	password = db.Column(db.String(32))
 	token = db.Column(db.String(32))
+	test = db.Column(db.String(32))
 	order =  db.relationship('orderList', foreign_keys = [orderList.orderid], backref = db.backref('orderuser', lazy='joined'), lazy='dynamic', cascade = 'all, delete-orphan')
 
 	def add(self):
@@ -128,6 +155,17 @@ class customerUser(db.Model):
 			print e
 			db.session.rollback()
 			return 2
+	def orderuser(self,user):
+		try:
+			lp = orderList(orderid = self.id, orderedid = user.id)
+			db.session.add(lp)
+			db.session.commit()
+			return 0
+		except Exception, e:
+			print e
+			db.session.rollback()
+			return 2
+
 class Measuredata(db.Model):
 	__tablename__ = "messuredatas"
 	id = db.Column(db.Integer,primary_key = True)
@@ -154,7 +192,17 @@ class food(db.Model):
 	price = db.Column(db.Float)
 	timestamp = db.Column(db.DateTime, default = datetime.now)
 	monthsales = db.Column(db.Integer)
-
+	#哪些订单包含这个食物
+	whatlists =  db.relationship('orderListDetail', foreign_keys = [orderListDetail.foodid], backref = db.backref('foods', lazy='joined'), lazy='dynamic', cascade = 'all, delete-orphan')	
+	def add(self):
+		try:
+			db.session.add(self)
+			db.session.execute('set names utf8mb4')
+			db.session.commit()
+		except Exception, e:
+			print e
+			db.session.rollback()
+			return 2
 def getuserinformation(token):
 	u=User.query.filter_by(token=token).first()
 	return u 
