@@ -46,13 +46,15 @@ class orderListDetail(db.Model):
 class orderList(db.Model):
 	__tablename__ = "orderlists"
 	id = db.Column(db.Integer,primary_key = True)
+	token = db.Column(db.String(32))
 	orderid = db.Column(db.Integer,db.ForeignKey('customerusers.id'),primary_key=True)
 	orderedid = db.Column(db.Integer,db.ForeignKey('users.id'), primary_key=True)
 	ordertime = db.Column(db.DateTime, default = datetime.now)
 	peoplenumber = db.Column(db.Integer)
 	price = db.Column(db.Float)
 	payprice = db.Column(db.Float)
-	paystate = db.Column(db.Boolean)
+	paystate = db.Column(db.Integer)
+	planeattime = db.Column(db.DateTime)
 	paytime = db.Column(db.DateTime)
 	#订单包含哪些食物
 	foodincludes =  db.relationship('orderListDetail', foreign_keys = [orderListDetail.orderlistid], backref = db.backref('orderlist', lazy='joined'), lazy='dynamic', cascade = 'all, delete-orphan')
@@ -149,9 +151,9 @@ class customerUser(db.Model):
 			print e
 			db.session.rollback()
 			return 2
-	def orderuser(self,user):
+	def orderuser(self,user,peoplenumber,price,paystate):
 		try:
-			lp = orderList(orderid = self.id, orderedid = user.id)
+			lp = orderList(orderid = self.id, orderedid = user.id, peoplenumber = peoplenumber, price = price,  paystate = paystate)
 			db.session.add(lp)
 			db.session.commit()
 			return 0,lp
