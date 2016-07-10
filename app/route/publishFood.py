@@ -23,7 +23,7 @@ def publishFood():
       state = 'fail'
       reason = 'unvalid user'
     else:
-      newFood = food(authorid = seller.id, name = foodName, description = description, price = price)
+      newFood = food(authorid = seller.id, name = foodName, description = description, price = price, disable = 1)
       if seller.publishfood(newFood) == 0:
         state = 'successful'
         reason = ''
