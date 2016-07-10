@@ -4,7 +4,7 @@ from flask import render_template
 from flask import redirect
 from models import *
 from wtforms import Form,TextField,PasswordField,validators
-from hashmd5 import *
+from functions.hashmd5 import *
 import os, stat
 #from PIL import Image
 #import Image
