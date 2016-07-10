@@ -217,10 +217,10 @@ class foodimage(db.Model):
 class checkMsg(db.Model):
 	__tablename__ = 'checkMsgs'
 	id = db.Column(db.Integer,primary_key = True)
-	phone = db.Column(db.String(64), nullable = False)
-	code = db.Column(db.String(32), nullable=False)
-	timestamp = db.Column(db.DateTime,default = datetime.now, nullable=False)
-	__table_args__ = (db.UniqueConstraint('phone', name='phone_unique'),)
+	phone = db.Column(db.String(64))
+	code = db.Column(db.String(32))
+	timestamp = db.Column(db.DateTime,default = datetime.now)
+
 
 	def add(self):
 		try:
