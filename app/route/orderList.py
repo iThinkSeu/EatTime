@@ -11,11 +11,19 @@ from functions.sendMsg import *
 
 orderList_route = Blueprint('orderList', __name__)
 
-@orderList_route.route("/orderuser",methods=['POST'])
-def orderuser():
+@orderList_route.route("/orderList",methods=['POST'])
+def orderList():
 	try:
-		username = request.json['username']
-		password = request.json['password']
+		token = request.json['token']
+		userid = request.json.get('userid','') 
+		foodList = request.json.get('foodlist','')
+		customerUser = get_customer_user_by_token(token)
+		orderedUser = get_user_by_id(userid)
+		flag,orderListTemp = customerUser.orderuser(orderedUser)
+		if flag==0:
+			for foodid in foodList:
+				
+			orderListTemp.addfood()
 		u=User(username=username,password=password)
 		if u.isExisted():
 			state = 'successful'

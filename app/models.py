@@ -82,7 +82,9 @@ class User(db.Model):
 	username = db.Column(db.String(32),unique = True)
 	password = db.Column(db.String(32))
 	token = db.Column(db.String(32))
-	measuredatas = db.relationship('Measuredata',backref = 'instrument', lazy = 'dynamic')
+	location = db.Column(db.String(32))
+	scoles = db.Column(db.Float)
+	personprice = db.Column(db.Float)
 	foods = db.relationship('food',backref = 'foodauthor', lazy = 'dynamic')
 	beordered =  db.relationship('orderList', foreign_keys = [orderList.orderedid], backref = db.backref('beordereduser', lazy='joined'), lazy='dynamic', cascade = 'all, delete-orphan')
 
@@ -111,17 +113,6 @@ class User(db.Model):
 			return 0
 		else:
 			return 1
-	def publishmeasuredata(self,measuredata):
-		try:
-			measuredata.instrument = self
-			db.session.add(measuredata)
-			db.session.execute('set names utf8mb4')
-			db.session.commit()
-			return 0
-		except Exception, e:
-			print e
-			db.session.rollback()
-			return 2	
 	def publishfood(self,food):
 		try:
 			food.foodauthor = self
@@ -139,7 +130,9 @@ class customerUser(db.Model):
 	username = db.Column(db.String(32),unique = True)
 	password = db.Column(db.String(32))
 	token = db.Column(db.String(32))
-	test = db.Column(db.String(32))
+	honesty = db.Column(db.Float) #信誉度
+	friendly = db.Column(db.Float)
+	passion = db.Column(db.Float)
 	order =  db.relationship('orderList', foreign_keys = [orderList.orderid], backref = db.backref('orderuser', lazy='joined'), lazy='dynamic', cascade = 'all, delete-orphan')
 
 	def add(self):
@@ -160,28 +153,12 @@ class customerUser(db.Model):
 			lp = orderList(orderid = self.id, orderedid = user.id)
 			db.session.add(lp)
 			db.session.commit()
-			return 0
+			return 0,lp
 		except Exception, e:
 			print e
 			db.session.rollback()
-			return 2
+			return 2,None
 
-class Measuredata(db.Model):
-	__tablename__ = "messuredatas"
-	id = db.Column(db.Integer,primary_key = True)
-	instrumentid = db.Column(db.Integer,db.ForeignKey('users.id'))
-	datatype = db.Column(db.String(32))
-	value = db.Column(db.Float)
-	timestamp = db.Column(db.DateTime, default = datetime.now)
-	def add(self):
-		try:
-			db.session.add(self)
-			db.session.execute('set names utf8mb4')
-			db.session.commit()
-		except Exception, e:
-			print e
-			db.session.rollback()
-			return 2
 
 class food(db.Model):
 	__tablename__ = "foods"
@@ -192,6 +169,7 @@ class food(db.Model):
 	price = db.Column(db.Float)
 	timestamp = db.Column(db.DateTime, default = datetime.now)
 	monthsales = db.Column(db.Integer)
+	disable = db.Column(db.Boolean,default = False) #表示食物是否有效，False=上架、True=下架
 	#哪些订单包含这个食物
 	whatlists =  db.relationship('orderListDetail', foreign_keys = [orderListDetail.foodid], backref = db.backref('foods', lazy='joined'), lazy='dynamic', cascade = 'all, delete-orphan')	
 	def add(self):
