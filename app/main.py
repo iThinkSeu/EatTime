@@ -1,10 +1,10 @@
-#-*- coding: UTF-8 -*-
+﻿#-*- coding: UTF-8 -*-
 from flask import request
 from flask import render_template
 from flask import redirect
 from models import *
 from wtforms import Form,TextField,PasswordField,validators
-from hashmd5 import *
+from functions.hashmd5 import *
 import os, stat
 #from PIL import Image
 #import Image
@@ -18,7 +18,9 @@ from route.publishFood import publishFood_route
 from route.commitOrderList import commitOrderList_route
 from route.homePage import customerHomePage_route
 
+
 from route.personInfo import personInfo_route
+from route.userInfo import userInfo_route
 app = create_app()
 
 ##注册蓝本路由
@@ -28,6 +30,7 @@ app.register_blueprint(commitOrderList_route)
 app.register_blueprint(customerHomePage_route)
 
 app.register_blueprint(personInfo_route)
+app.register_blueprint(userInfo_route)
 
 if __name__ == '__main__':
 	app.run(host=os.getenv('IP','0.0.0.0'),port=int(os.getenv('PORT',8080)),debug = True)
