@@ -9,7 +9,6 @@ from sqlalchemy import and_
 from dbSetting import create_app,db,sqlurl
 
 
-
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI']=sqlurl
 db = SQLAlchemy(app)
@@ -87,6 +86,8 @@ class User(db.Model):
 	location = db.Column(db.String(32))
 	scoles = db.Column(db.Float)
 	personprice = db.Column(db.Float)
+	confirm = db.Column(db.Boolean)
+	homeimgurl = db.Column(db.String(256))
 	foods = db.relationship('food',backref = 'foodauthor', lazy = 'dynamic')
 	beordered =  db.relationship('orderList', foreign_keys = [orderList.orderedid], backref = db.backref('beordereduser', lazy='joined'), lazy='dynamic', cascade = 'all, delete-orphan')
 
@@ -213,6 +214,23 @@ class foodimage(db.Model):
 			print e
 			db.session.rollback()
 			return 2
+class checkMsg(db.Model):
+	__tablename__ = 'checkMsgs'
+	id = db.Column(db.Integer,primary_key = True)
+	phone = db.Column(db.String(64), nullable = False)
+	code = db.Column(db.String(32), nullable=False)
+	timestamp = db.Column(db.DateTime,default = datetime.now, nullable=False)
+	__table_args__ = (db.UniqueConstraint('phone', name='phone_unique'),)
+
+	def add(self):
+		try:
+			db.session.add(self)
+			db.session.execute('set names utf8mb4')
+			db.session.commit()
+		except Exception, e:
+			print e
+			db.session.rollback()
+			return 2				
 
 def getuserinformation(token):
 	u=User.query.filter_by(token=token).first()
