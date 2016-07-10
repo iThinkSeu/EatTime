@@ -16,6 +16,7 @@ from dbSetting import create_app,db
 from route.loginRegister import loginRegister_route
 from route.publishFood import publishFood_route
 from route.commitOrderList import commitOrderList_route
+from route.homePage.py import customerHomePage_route
 
 from route.personInfo import personInfo_route
 app = create_app()
@@ -24,6 +25,7 @@ app = create_app()
 app.register_blueprint(loginRegister_route)  			#注册与登录
 app.register_blueprint(publishFood_route)
 app.register_blueprint(commitOrderList_route)
+app.register_blueprint(customerHomePage_route)
 
 app.register_blueprint(personInfo_route)
 
