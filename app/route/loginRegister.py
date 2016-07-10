@@ -7,6 +7,7 @@ sys.path.append("..")
 from models import *
 from functions.hashmd5 import *
 from functions.sendMsg import *
+import random
 
 
 loginRegister_route = Blueprint('loginRegister', __name__)

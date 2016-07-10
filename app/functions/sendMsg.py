@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import top.api
 
-appkey = "23319113"
-secret = "19400b4f2c9da8cb8659d2b82ea8c4ba"
+appkey = "23403451"
+secret = "c3664d30ee8d50793400a25a1a10600e"
 
 
 def send_sms_code_by_type(phone, code, t):
@@ -19,7 +19,7 @@ def send_register_code(phone,code):
 
 	req.sms_type="normal"
 	req.sms_free_sign_name="WEME唯觅"
-	req.sms_param={"code":str(code),"product":"WEME"}
+	req.sms_param={"code":str(code),"product":"EatTime"}
 	req.rec_num=str(phone)
 	req.sms_template_code="SMS_5375426"
 	try:
