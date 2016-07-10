@@ -17,16 +17,18 @@ def homePage():
   try:
     token = request.json['token']
     page = request.json['page']
-    customerUser = get_customer_usr_by_token(token)
-    if customerUser is not None:
-      pageitems = customerUser.paginate(page, per_page = 3, error_out = False)
-      sellerView = [{'userid':item.id, 'name':item.username, 'location':item.location, 'monthsales':item.beordered.filter_by(paystate = 8, paytime + timedelta(days=30) > datetime.now()).all().foodincludes.count(), 'scores':item.scores, 'personprice':item.personprice, 'foodurl':'', 'headimg':''} for item in pageitems.items]
+    customer = get_customer_user_by_token(token)
+    if customer is not None:
+      pageitems = User.query.order_by(User.scoles.asc()).paginate(page, per_page = 3, error_out = False)
+      foodurl = ''
+      headimg = ''
+      sellerView = [{'userid':item.id, 'name':item.username, 'location':item.location, 'monthsales':sum(item.foods.monthsales.all()), 'scores':item.scoles, 'personprice':item.personprice, 'foodurl':foodurl, 'headimg':headimg} for item in pageitems.items]
       bannerImgUrls = []
       state = 'successful'
       reason = ''
       response = jsonify({'state':state,
             'reason':reason,
-            'bannerImgUrls': bannerImgUrls
+            'bannerImgUrls': bannerImgUrls,
             'result': sellerView})
       return reponse
     else:
@@ -36,9 +38,9 @@ def homePage():
       sellerView = []
       response = jsonify({'state':state,
             'reason':reason,
-            'bannerImgUrls': bannerImgUrls
+            'bannerImgUrls': bannerImgUrls,
             'result': sellerView})
-      return reponse
+      return response
   except Exception ,e:
     print e
     state = 'fail'
@@ -47,6 +49,6 @@ def homePage():
     sellerView = []
     response = jsonify({'state':state,
           'reason':reason,
-          'bannerImgUrls': bannerImgUrls
+          'bannerImgUrls': bannerImgUrls,
           'result': sellerView})
-    return reponse
+    return response

@@ -16,7 +16,7 @@ from dbSetting import create_app,db
 from route.loginRegister import loginRegister_route
 from route.publishFood import publishFood_route
 from route.commitOrderList import commitOrderList_route
-from route.homePage.py import customerHomePage_route
+from route.homePage import customerHomePage_route
 
 from route.personInfo import personInfo_route
 app = create_app()
