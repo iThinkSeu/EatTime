@@ -22,7 +22,7 @@ def homePage():
       pageitems = User.query.order_by(User.scoles.asc()).paginate(page, per_page = 3, error_out = False)
       foodurl = ''
       headimg = ''
-      sellerView = [{'userid':item.id, 'name':item.username, 'location':item.location, 'monthsales':sum(item.foods.monthsales.all()), 'scores':item.scoles, 'personprice':item.personprice, 'foodurl':foodurl, 'headimg':headimg} for item in pageitems.items]
+      sellerView = [{'userid':item.id, 'name':item.username, 'location':item.location, 'monthsales':sum([fitem.monthsales for fitem in item.foods]), 'scores':item.scoles, 'personprice':item.personprice, 'foodurl':foodurl, 'headimg':headimg} for item in pageitems.items]
       bannerImgUrls = []
       state = 'successful'
       reason = ''
@@ -30,7 +30,7 @@ def homePage():
             'reason':reason,
             'bannerImgUrls': bannerImgUrls,
             'result': sellerView})
-      return reponse
+      return response
     else:
       state = 'fail'
       reason = 'unvalid user'
