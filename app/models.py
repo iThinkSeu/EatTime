@@ -1,12 +1,12 @@
-#-*- coding: UTF-8 -*- 
+#-*- coding: UTF-8 -*-
 from flask import Flask
-from flask.ext.sqlalchemy import SQLAlchemy 
+from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.script import Manager
 from flask.ext.migrate import Migrate, MigrateCommand
 from datetime import *
 from sqlalchemy import or_
 from sqlalchemy import and_
-from dbSetting import create_app,db,sqlurl 
+from dbSetting import create_app,db,sqlurl
 
 
 
@@ -56,7 +56,7 @@ class orderList(db.Model):
 	paystate = db.Column(db.Boolean)
 	paytime = db.Column(db.DateTime)
 	#订单包含哪些食物
-	foodincludes =  db.relationship('orderListDetail', foreign_keys = [orderListDetail.orderlistid], backref = db.backref('orderlist', lazy='joined'), lazy='dynamic', cascade = 'all, delete-orphan')	
+	foodincludes =  db.relationship('orderListDetail', foreign_keys = [orderListDetail.orderlistid], backref = db.backref('orderlist', lazy='joined'), lazy='dynamic', cascade = 'all, delete-orphan')
 	def add(self):
 		try:
 			db.session.add(self)
@@ -123,7 +123,7 @@ class User(db.Model):
 		except Exception, e:
 			print e
 			db.session.rollback()
-			return 2	
+			return 2
 class customerUser(db.Model):
 	__tablename__ = "customerusers"
 	id = db.Column(db.Integer,primary_key=True)
@@ -165,13 +165,13 @@ class food(db.Model):
 	id = db.Column(db.Integer,primary_key = True)
 	authorid = db.Column(db.Integer,db.ForeignKey('users.id'))
 	name = db.Column(db.String(32))
-	discription = db.Column(db.String(256))
+	description = db.Column(db.String(256))
 	price = db.Column(db.Float)
 	timestamp = db.Column(db.DateTime, default = datetime.now)
 	monthsales = db.Column(db.Integer)
 	disable = db.Column(db.Boolean,default = False) #表示食物是否有效，False=上架、True=下架
 	#哪些订单包含这个食物
-	whatlists =  db.relationship('orderListDetail', foreign_keys = [orderListDetail.foodid], backref = db.backref('foods', lazy='joined'), lazy='dynamic', cascade = 'all, delete-orphan')	
+	whatlists =  db.relationship('orderListDetail', foreign_keys = [orderListDetail.foodid], backref = db.backref('foods', lazy='joined'), lazy='dynamic', cascade = 'all, delete-orphan')
 	def add(self):
 		try:
 			db.session.add(self)
@@ -181,18 +181,19 @@ class food(db.Model):
 			print e
 			db.session.rollback()
 			return 2
+
 def getuserinformation(token):
 	u=User.query.filter_by(token=token).first()
-	return u 
+	return u
 
 def getTokeninformation(username):
 	u=User.query.filter_by(username=username).first()
-	return u 
+	return u
 
 def get_history_data(typelist,start_time,end_time):
 	a = Measuredata.query.filter(Measuredata.datatype.in_(typelist)).filter(Measuredata.timestamp.between(start_time,end_time)).order_by(Measuredata.timestamp.desc()).all()
 	#a = Measuredata.query.filter(Measuredata.datatype.in_(typelist)).order_by(Measuredata.timestamp.desc()).all()
-	return a 
+	return a
 
 if __name__ == '__main__':
 	manager.run()
