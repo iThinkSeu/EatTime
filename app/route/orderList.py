@@ -1,4 +1,4 @@
-#-*- coding: UTF-8 -*- 
+#-*- coding: UTF-8 -*-
 from flask import Blueprint
 from flask import request,jsonify,json
 import traceback
@@ -7,49 +7,67 @@ sys.path.append("..")
 from models import *
 from functions.hashmd5 import *
 from functions.sendMsg import *
+from functions.DBFunctions import *
 
 
-orderList_route = Blueprint('orderList', __name__)
+commitOrderList_route = Blueprint('commitOrderList', __name__)
 
-@orderList_route.route("/orderList",methods=['POST'])
-def orderList():
+@commitOrderList.route("/commitOrderList",methods=['POST'])
+def commitOrderList():
 	try:
 		token = request.json['token']
-		userid = request.json.get('userid','') 
-		foodList = request.json.get('foodlist','')
+		sellerId = request.json.get('sellerId','')
+		foodList = request.json.get('foodList',[])
+		peoplenumber = request.json.get('peopleNumer', 1)
+		#price = request.json['price']
 		customerUser = get_customer_user_by_token(token)
-		orderedUser = get_user_by_id(userid)
-		flag,orderListTemp = customerUser.orderuser(orderedUser)
-		if flag==0:
-			for foodid in foodList:
-				
-			orderListTemp.addfood()
-		u=User(username=username,password=password)
-		if u.isExisted():
-			state = 'successful'
-			tmp = getTokeninformation(username)
-			token = tmp.token
-			id = tmp.id
-			reason = ''
-		else:
-			id=''
+		seller = get_user_by_id(userid)
+		if customerUser is None:
+			olderListid = ''
 			state = 'fail'
-			token = 'None'
-			reason = '用户名密码错误'
-	except Exception, e:
-		print "login error!!"
-		print e
-		username = ''
-		password = ''
-		state = 'fail'
-		reason='服务器异常'
-		token = 'None'
-		id = ''
+			reason = 'unvalid customer user'
+			repsone = jsonify({'orderListid':olderListid, 'state':state, 'reason':reason})
+			return response
 
-	response = jsonify({'id':id,
-						'state':state,
-						'username':username,
-						'reason':reason,
-						'token':token})
-	#print state, reason
-	return response
+		if seller is None:
+			olderListid = ''
+			state = 'fail'
+			reason = 'unvalid seller user'
+			repsone = jsonify({'orderListid':olderListid, 'state':state, 'reason':reason})
+			return response
+
+		price = 0;
+		for foodid in foodList:
+				food = get_food_by_id(foodid)
+				if food is None:
+					olderListid = ''
+					state = 'fail'
+					reason = 'unvalid food: ' + str(foodid)
+					repsone = jsonify({'olderListid':orderListid, 'state':state, 'reason':reason})
+					return response
+				price += food.price
+
+		flag, orderListTemp = customerUser.orderuser(seller, peoplenumber, price, 0)
+
+		if flag == 0:
+			for foodid in foodList:
+				food = get_food_by_id(foodid)
+				if orderListTemp.addfood(food) == 2:
+					olderListid = ''
+					state = 'fail'
+					reason = 'database error@2'
+					repsone = jsonify({'olderListid':orderListid, 'state':state, 'reason':reason})
+					return response
+			olderListid = ''
+			state = 'successful'
+			reason = ''
+			response = jsonify({'state':state,
+			                  'reason':reason})
+			return response
+		else :
+			state = 'fail'
+			reason = 'database error@1'
+			response = jsonify({'state':state,
+			                  'reason':reason})
+			return response
+	except Exception, e:
