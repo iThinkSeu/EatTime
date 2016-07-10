@@ -182,6 +182,36 @@ class food(db.Model):
 			db.session.rollback()
 			return 2
 
+class topofficial(db.Model):
+	__tablename__ = 'topofficials'
+	id = db.Column(db.Integer,primary_key=True)
+	imageurl = db.Column(db.String(256))
+	userid = db.Column(db.Integer)
+	rank = db.Column(db.Integer,default = 0)
+	def add(self):
+		try:
+			db.session.add(self)
+			db.session.commit()
+			return 0
+		except Exception, e:
+			print e
+			db.session.rollback()
+			return 2
+class foodimage(db.Model):
+	__tablename__ = 'foodimages'
+	id = db.Column(db.Integer,primary_key=True)
+	imageurl = db.Column(db.String(256))
+	foodid = db.Column(db.Integer)
+	def add(self):
+		try:
+			db.session.add(self)
+			db.session.commit()
+			return 0
+		except Exception, e:
+			print e
+			db.session.rollback()
+			return 2
+
 def getuserinformation(token):
 	u=User.query.filter_by(token=token).first()
 	return u
