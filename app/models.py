@@ -47,6 +47,7 @@ class orderListDetail(db.Model):
 class orderList(db.Model):
 	__tablename__ = "orderlists"
 	id = db.Column(db.Integer,primary_key = True)
+	token = db.Column(db.String(32))
 	orderid = db.Column(db.Integer,db.ForeignKey('customerusers.id'),primary_key=True)
 	orderedid = db.Column(db.Integer,db.ForeignKey('users.id'), primary_key=True)
 	ordertime = db.Column(db.DateTime, default = datetime.now)
@@ -151,7 +152,7 @@ class customerUser(db.Model):
 			return 2
 	def orderuser(self,user,peoplenumber,price,paystate):
 		try:
-			lp = orderList(orderid = self.id, orderedid = user.id, peoplenumber = peoplenumber, price = price, paystate = paystate)
+			lp = orderList(orderid = self.id, orderedid = user.id, peoplenumber = peoplenumber, price = price,  paystate = paystate)
 			db.session.add(lp)
 			db.session.commit()
 			return 0,lp

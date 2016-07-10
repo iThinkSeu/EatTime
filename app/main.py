@@ -15,12 +15,14 @@ from dbSetting import create_app,db
 
 from route.loginRegister import loginRegister_route
 from route.publishFood import publishFood_route
+from route.commitOrderList import commitOrderList_route
 
 app = create_app()
 
 ##注册蓝本路由
 app.register_blueprint(loginRegister_route)  			#注册与登录
 app.register_blueprint(publishFood_route)
+app.register_blueprint(commitOrderList_route)
 
 
 if __name__ == '__main__':
