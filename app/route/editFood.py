@@ -1,10 +1,12 @@
+#-*- coding: UTF-8 -*-
+
 from flask import Blueprint
 from flask import request,jsonify,json
 import traceback
 import sys
 sys.path.append("..")
-from ..models import User
-from ..models import food as Food
+from models import User, db, foodimage
+from models import food as Food
 
 
 editFood_route = Blueprint('editFood', __name__)
@@ -31,17 +33,39 @@ def editFood():
         if request.json.get("foodDescription") is None:
             pass
         else:
-            food.description = str(request.json["foodDescription"])
+            food.description = (request.json["foodDescription"])
 
         if request.json.get("foodPrice") is None:
             pass
         else:
             food.price = float(request.json["foodPrice"])
 
-        imgUrlList = request.json.get("imgUrlList")
-        if imgUrlList is None:
+
+        if request.json.get("disable") is None:
             pass
         else:
+            disable = int(request.json.get("disable"))
+            if disable == 1:
+                food.disable = 1
+            else:
+                food.disable = 0
+
+        food.add()
+
+        state = "successful"
+        reason = ""
+    except Exception, e:
+        print e
+        state = "fail"
+        reason = "服务器异常"
+
+    finally:
+        return jsonify({
+            "state":state,
+            "reason":reason
+        })
+
+
 
 
 

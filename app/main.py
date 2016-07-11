@@ -1,4 +1,5 @@
 ﻿#-*- coding: UTF-8 -*-
+
 from flask import request
 from flask import render_template
 from flask import redirect
@@ -22,8 +23,11 @@ from route.homePage import homePage_route
 from route.personInfo import personInfo_route
 from route.userInfo import userInfo_route
 from route.editUserInfo import editUserInfo_route
+from route.editFood import editFood_route
 
 app = create_app()
+
+
 
 ##注册蓝本路由
 app.register_blueprint(loginRegister_route)  			#注册与登录
@@ -34,6 +38,8 @@ app.register_blueprint(homePage_route)
 app.register_blueprint(personInfo_route)
 app.register_blueprint(userInfo_route)
 app.register_blueprint(editUserInfo_route)
+app.register_blueprint(editFood_route)
+
 
 if __name__ == '__main__':
 	app.run(host=os.getenv('IP','0.0.0.0'),port=int(os.getenv('PORT',5000)),debug = True)
