@@ -101,6 +101,84 @@ def commitOrderList():
 		response = jsonify({'orderListid':olderListid, 'state':state, 'reason':reason, 'orderedTime':orderedTime, 'planEatTime':planEatTime})
 		return response
 
+@orderList_route.route("/sellerCancelOrder", methods = ['POST'])
+def sellerCancelOrder():
+	try:
+		sellerToken = request.json['token']
+		orderId = request.json['orderId']
+		seller = get_user_by_token(sellerToken)
+		if seller is not None:
+			order = seller.beordered.filter_by(token = orderId).first()
+			if order is not None:
+				if order.paystate == 0:
+					order.paystate = 3
+					order.add()
+					state = 'successful'
+					reason = ''
+				elif order.paystate == 1:
+					order.paystate = 5
+					order.add()
+					state = 'successful'
+					reason = ''
+				elif order.paystate == 2:
+					state = 'fail'
+					reason = 'cannot cancel completed order'
+				else :
+					state = 'fail'
+					reason = 'the order has already been cancelled'
+			else :
+				state = 'fail'
+				reason = 'unvalid order'
+		else :
+			state = 'fail'
+			reason = 'unvalid seller'
+	except Exception, e:
+		print e
+		state = 'fail'
+		reason = 'exception'
+
+	response = jsonify({'state':state,
+	                   'reason':reason})
+	return response
+
+@orderList_route.route("/customerCancelOrder", methods = ['POST'])
+def customerCancelOrder():
+	try:
+		customerToken = request.json['token']
+		orderId = request.json['orderId']
+		customer = get_user_by_token(customerToken)
+		if customer is not None:
+			order = customer.order.filter_by(token = orderId).first()
+			if order is not None:
+				if order.paystate == 0:
+					order.paystate = 4
+					order.add()
+					state = 'successful'
+					reason = ''
+				elif order.paystate == 1:
+					state = 'fail'
+					reason = 'permisssion denied'
+				elif order.paystate == 2:
+					state = 'fail'
+					reason = 'cannot cancel completed order'
+				else :
+					state = 'fail'
+					reason = 'the order has already been cancelled'
+			else :
+				state = 'fail'
+				reason = 'unvalid order'
+		else :
+			state = 'fail'
+			reason = 'unvalid seller'
+	except Exception, e:
+		print e
+		state = 'fail'
+		reason = 'exception'
+
+	response = jsonify({'state':state,
+	                   'reason':reason})
+	return response
+
 
 @orderList_route.route("/sellerOrder/<int:id>", methods = ['POST'])
 def sellerOrder(id):
