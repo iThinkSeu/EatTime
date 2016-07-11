@@ -13,7 +13,7 @@ publishFood_route = Blueprint('publishFood', __name__)
 def publishFood():
   try:
     token = request.json['token']
-    sellerName = request.json.get('userName','')
+    print token
     foodName = request.json['foodName']
     description = request.json.get('description','该商家很懒，并没有添加描述~')
     price = request.json['price']
@@ -23,22 +23,23 @@ def publishFood():
       state = 'fail'
       reason = 'unvalid user'
     else:
-      newFood = food(authorid = seller.id, name = foodName, description = description, price = price, disable = 1)
+      newFood = food(authorid = seller.id, name = foodName, description = description, price = price, disable = 0, monthsales = 0)
       if seller.publishfood(newFood) == 0:
         state = 'successful'
         reason = ''
       else :
         state = 'fail'
         reason = 'database error'
+
   except Exception, e:
-    print 'Need Token!'
+    #print 'Need Token!'
     print e
     state = 'fail'
     reason = 'need token'
-
   response = jsonify({'state':state,
-                     'reason':reason})
+                       'reason':reason})
 
   return response
+
 
 

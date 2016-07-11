@@ -53,6 +53,7 @@ def customerHomePage():
           'result': sellerView})
     return response
 
+
 @homePage_route.route("/sellerHomePage", methods = ['POST'])
 def sellerHomePage():
   try:
