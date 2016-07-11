@@ -56,6 +56,7 @@ class orderList(db.Model):
 	paystate = db.Column(db.Integer)
 	planeattime = db.Column(db.DateTime)
 	paytime = db.Column(db.DateTime)
+	scores = db.Column(db.Float, default = 0)
 	#订单包含哪些食物
 	foodincludes =  db.relationship('orderListDetail', foreign_keys = [orderListDetail.orderlistid], backref = db.backref('orderlist', lazy='joined'), lazy='dynamic', cascade = 'all, delete-orphan')
 	def add(self):
@@ -88,6 +89,9 @@ class User(db.Model):
 	personprice = db.Column(db.Float)
 	confirm = db.Column(db.Boolean)
 	homeimgurl = db.Column(db.String(256))
+	headimgurl = db.Column(db.String(256))
+	identity = db.Column(db.String(256))
+	sex = db.Column(db.String(32))
 	foods = db.relationship('food',backref = 'foodauthor', lazy = 'dynamic')
 	beordered =  db.relationship('orderList', foreign_keys = [orderList.orderedid], backref = db.backref('beordereduser', lazy='joined'), lazy='dynamic', cascade = 'all, delete-orphan')
 
@@ -175,6 +179,7 @@ class food(db.Model):
 	disable = db.Column(db.Boolean,default = False) #表示食物是否有效，False=上架、True=下架
 	#哪些订单包含这个食物
 	whatlists =  db.relationship('orderListDetail', foreign_keys = [orderListDetail.foodid], backref = db.backref('foods', lazy='joined'), lazy='dynamic', cascade = 'all, delete-orphan')
+	foodimgs = db.relationship('foodimage', backref = 'foods', lazy = 'dynamic')
 	def add(self):
 		try:
 			db.session.add(self)
@@ -204,7 +209,7 @@ class foodimage(db.Model):
 	__tablename__ = 'foodimages'
 	id = db.Column(db.Integer,primary_key=True)
 	imageurl = db.Column(db.String(256))
-	foodid = db.Column(db.Integer)
+	foodid = db.Column(db.Integer, db.ForeignKey('foods.id'))
 	def add(self):
 		try:
 			db.session.add(self)

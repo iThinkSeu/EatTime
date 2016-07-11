@@ -249,4 +249,39 @@ def customerOrder(id):
 		                   'availableOrder':availableOrderView})
 		return response
 
+@orderList_route.route('/ratedOrder', methods = ['POST'])
+def ratedOrder():
+	try :
+		customerToken = request.json['token']
+		orderId = request.json['orderId']
+		orderScores = request.json['orderScores']
+		customer = get_customer_user_by_token(customerToken)
+		if customer is not None:
+			order = customer.order.filter_by(token = orderId).first()
+			if order is not None:
+				if orser.paystate == 5:
+					order.scores = float(orderScores)
+					db.session.commit(order)
+					state = 'successful'
+					reason = ''
+				else :
+					state = 'fail'
+					reason = 'cannot rate uncompleted order'
+			else :
+				state = 'fail'
+				reason = 'unvalid order'
+		else :
+			state = 'fail'
+			reason = 'un valid customer'
+	except Exception, e:
+		print e
+		state = 'fail'
+		reason = 'e'
+
+	response = jsonify({
+	                   'state':state,
+	                   'reason':reason
+	                   })
+	return response
+
 
