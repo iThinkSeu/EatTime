@@ -1,4 +1,4 @@
-#-*- coding: UTF-8 -*- 
+#-*- coding: UTF-8 -*-
 from flask import Blueprint
 from flask import request,jsonify,json
 import traceback
@@ -132,7 +132,7 @@ def register():
 		username=request.json[u'username']
 		password=request.json['password']
 		temp = checkName(username)
-		if temp==False:		
+		if temp==False:
 			response = jsonify({
 								'id':'',
 								'state':'fail',
@@ -233,7 +233,7 @@ def appregister():
 		token = ''
 		id = ''
 		temp = checkName(username)
-		if temp==False:		
+		if temp==False:
 			response = jsonify({
 								'id':'',
 								'state':'fail',
@@ -254,8 +254,8 @@ def appregister():
 			reason = '用户名已被注册'
 			token = 'Haveresiger'
 			id=''
-	
-	except Exception, e:	
+
+	except Exception, e:
 		print e
 		state = 'fail'
 		reason = 'exception'
