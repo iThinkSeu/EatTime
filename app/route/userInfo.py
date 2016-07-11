@@ -5,8 +5,8 @@ from flask import request,jsonify,json
 import traceback
 import sys
 sys.path.append("..")
-from models import User
-from models import food as Food
+from ..models import User
+from ..models import food as Food
 
 #说明：客户端发送:page（可选）,token
 #homeImgUrl数据库中没有，先返回空
@@ -25,7 +25,11 @@ def userInfo():
             state = "fail"
             reason="用户不存在"
             return jsonify({"state":state,
-                             "reason":reason
+                             "reason":reason,
+                             "username":"",
+                             "homeimgurl":"",
+                             "confirm":"",
+                             "foodlist":""
                             })
 
         username = user.username
@@ -75,7 +79,11 @@ def userInfo():
         reason = "服务器异常"
         return jsonify({
             "state":state,
-            "reason":reason
+            "reason":reason,
+            "username":"",
+            "homeimgurl":"",
+            "confirm":"",
+            "foodlist":""
         }
 
         )
