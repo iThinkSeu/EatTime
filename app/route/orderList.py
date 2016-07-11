@@ -43,7 +43,7 @@ def commitOrderList():
 			return response
 
 		price = 0;
-		for foodid in foodList:
+		for foodid, number in foodList:
 				food = get_food_by_id(foodid)
 				if food is None:
 					orderedTime = ''
@@ -53,7 +53,7 @@ def commitOrderList():
 					reason = 'unvalid food: ' + str(foodid)
 					response = jsonify({'orderListid':olderListid, 'state':state, 'reason':reason, 'orderedTime':orderedTime, 'planEatTime':planEatTime})
 					return response
-				price += food.price
+				price += (food.price * number)
 
 		flag, orderListTemp = customerUser.orderuser(seller, peoplenumber, price, 0)
 
@@ -63,9 +63,9 @@ def commitOrderList():
 
 
 		if flag == 0:
-			for foodid in foodList:
+			for foodid, number in foodList:
 				food = get_food_by_id(foodid)
-				if orderListTemp.addfood(food) != 0:
+				if orderListTemp.addfood(food, number) != 0:
 					orderedTime = ''
 					planEatTime = ''
 					olderListid = ''

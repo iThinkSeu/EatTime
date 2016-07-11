@@ -67,9 +67,9 @@ class orderList(db.Model):
 			print e
 			db.session.rollback()
 			return 2
-	def addfood(self,food):
+	def addfood(self,food,number):
 		try:
-			lp = orderListDetail(orderlistid = self.id, foodid = food.id)
+			lp = orderListDetail(orderlistid = self.id, foodid = food.id, number = number)
 			db.session.add(lp)
 			db.session.commit()
 			return 0
@@ -230,7 +230,7 @@ class checkMsg(db.Model):
 		except Exception, e:
 			print e
 			db.session.rollback()
-			return 2				
+			return 2
 
 def getuserinformation(token):
 	u=User.query.filter_by(token=token).first()
