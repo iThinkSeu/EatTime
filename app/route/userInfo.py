@@ -5,8 +5,8 @@ from flask import request,jsonify,json
 import traceback
 import sys
 sys.path.append("..")
-from ..models import User
-from ..models import food as Food
+from models import User
+from models import food as Food
 
 #说明：客户端发送:page（可选）,token
 #homeImgUrl数据库中没有，先返回空

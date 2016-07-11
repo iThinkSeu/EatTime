@@ -5,7 +5,7 @@ from flask import request,jsonify,json
 import traceback
 import sys
 sys.path.append("..")
-from ..models import User
+from models import *
 
 editUserInfo_route = Blueprint('editUserInfo', __name__)
 
@@ -17,10 +17,10 @@ def editUserInfo():
         if user is None:
             state = "fail"
             reason = "用户不存在"
-            return{
+            return jsonify({
                 "state":state,
                 "reason":reason
-            }
+            })
 
         location = request.json.get("location")
         if request.json.get("location") != None:
@@ -35,17 +35,20 @@ def editUserInfo():
         if request.json.get("confirm") != None:
             user.confirm = int(request.json.get("confirm"))
 
+        #db.session.add(user)
+        db.session.commit()
         state = "sucessfull"
         reason = ""
-        return{
+        return jsonify({
             "state":state,
             "reason":reason
-        }
+        })
 
     except Exception, e:
+        print e
         state = "fail"
         reason="服务器异常"
-        return{
+        return jsonify({
             "state":state,
             "reason":reason
-        }
+        })
