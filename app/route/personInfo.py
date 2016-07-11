@@ -25,7 +25,10 @@ def personInfo():
             state ="fail"
             reason = "没有这个用户"
             return jsonify({"state":state,
-                             "reason":reason
+                             "reason":reason,
+                             "friendly":"",
+                             "honesty":"",
+                             "passion":""
                             })
 
         friendly = user.friendly
@@ -38,6 +41,9 @@ def personInfo():
     except Exception, e:
         state = "fail"
         reason = "服务器异常"
+        friendly = ""
+        passion = ""
+        honesty = ""
 
 
     return jsonify({"state":state,
