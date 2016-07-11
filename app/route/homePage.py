@@ -10,10 +10,10 @@ from functions.sendMsg import *
 from functions.DBFunctions import *
 from datetime import *
 
-customerHomePage_route = Blueprint('customerHomePage', __name__)
+homePage_route = Blueprint('homePage', __name__)
 
-@customerHomePage_route.route("/customerHomePage", methods=['POST'])
-def homePage():
+@homePage_route.route("/customerHomePage", methods=['POST'])
+def customerHomePage():
   try:
     token = request.json['token']
     page = request.json['page']
@@ -52,3 +52,32 @@ def homePage():
           'bannerImgUrls': bannerImgUrls,
           'result': sellerView})
     return response
+
+@homePage_route.route("/sellerHomePage", methods = ['POST'])
+def sellerHomePage():
+  try:
+    sellerToken = request.json['token']
+    page = request.json['page']
+    seller = get_user_by_token(sellerToken)
+    if seller is not None:
+      img = ''
+      pageitems = seller.foods.paginate(page, per_page = 10, error_out = False)
+      foodList = [{'id':item.id, 'name':item.name, 'monthsales':item.monthsales, 'price':item.price, 'state':not item.disable, 'imgUrl':img} for item in pageitems.items]
+      state = 'successful'
+      reason = ''
+    else :
+      state = 'fail'
+      reason = 'un valid seller'
+      foodList = []
+  except Exception, e:
+    print e
+    state = 'fail'
+    reason = 'exception'
+    foodList = []
+
+  response = jsonify({'state':state,
+                      'reason':reason,
+                      'foodList':foodList
+                      })
+
+  return response

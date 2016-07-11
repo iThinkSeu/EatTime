@@ -146,7 +146,7 @@ def customerCancelOrder():
 	try:
 		customerToken = request.json['token']
 		orderId = request.json['orderId']
-		customer = get_user_by_token(customerToken)
+		customer = get_customer_user_by_token(customerToken)
 		if customer is not None:
 			order = customer.order.filter_by(token = orderId).first()
 			if order is not None:
@@ -169,7 +169,7 @@ def customerCancelOrder():
 				reason = 'unvalid order'
 		else :
 			state = 'fail'
-			reason = 'unvalid seller'
+			reason = 'unvalid customer'
 	except Exception, e:
 		print e
 		state = 'fail'
