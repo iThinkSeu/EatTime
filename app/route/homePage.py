@@ -19,17 +19,15 @@ def customerHomePage():
     page = request.json['page']
     customer = get_customer_user_by_token(token)
     if customer is not None:
-      pageitems = User.query.order_by(User.scoles.asc()).paginate(page, per_page = 3, error_out = False)
-      foodurl = ''
-      headimg = ''
-      sellerView = [{'userid':item.id, 'name':item.username, 'location':item.location, 'monthsales':sum([fitem.monthsales for fitem in item.foods]), 'scores':item.scoles, 'personprice':item.personprice, 'foodurl':foodurl, 'headimg':headimg} for item in pageitems.items]
-      bannerImgUrls = []
+      pageitems = User.query.order_by(User.scoles.asc()).paginate(int(page), per_page = 5, error_out = False)
+      sellerView = [{'sellerId':item.id, 'sellerName':item.username, 'location':item.location, 'monthSales':sum([fitem.monthsales for fitem in item.foods]), 'scores':item.scoles, 'personPrice':item.personprice, 'foodImg':item.foods.first().foodimgs.first().imageurl, 'headImg':item.headimgurl} for item in pageitems.items]
+      bannerImgUrls = [{'imgUrls':item.imageurl, 'rank':item.rank} for item in topofficial.query.all()]
       state = 'successful'
       reason = ''
       response = jsonify({'state':state,
             'reason':reason,
             'bannerImgUrls': bannerImgUrls,
-            'result': sellerView})
+            'sellerView': sellerView})
       return response
     else:
       state = 'fail'
@@ -52,6 +50,7 @@ def customerHomePage():
           'bannerImgUrls': bannerImgUrls,
           'result': sellerView})
     return response
+
 
 
 @homePage_route.route("/sellerHomePage", methods = ['POST'])
