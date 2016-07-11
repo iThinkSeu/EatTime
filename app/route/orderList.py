@@ -111,7 +111,7 @@ def sellerOrder(id):
 		if seller is not None:
 			pageitems = seller.beordered.filter_by(paystate = id).paginate(page, per_page = 3, error_out = False)
 			headImg = ''
-			availableOrderView = [{'orderInfo':{'orderId':item.token, 'planeEatTime':item.planeattime, 'price':item.price, 'payprice':item.payprice}, 'customerInfo':{'Id':item.orderuser.id, 'name':item.orderuser.username, 'headImg':headImg, 'honesty':item.orderuser.honesty, 'friendly':item.orderuser.friendly, 'passion':item.orderuser.passion}, 'foodListInfo':[{'id':foodi.id, 'name':foodi.foods.name} for foodi in item.foodincludes]} for item in pageitems.items]
+			availableOrderView = [{'orderInfo':{'orderId':item.token, 'planeEatTime':item.planeattime, 'price':item.price, 'payprice':item.payprice, 'orderTime':item.orderTime, 'paytime':item.paytime, 'peopleNumber':item.peoplenumber}, 'customerInfo':{'Id':item.orderuser.id, 'name':item.orderuser.username, 'headImg':headImg, 'honesty':item.orderuser.honesty, 'friendly':item.orderuser.friendly, 'passion':item.orderuser.passion}, 'foodListInfo':[{'id':foodi.id, 'name':foodi.foods.name, 'number':foodi.number} for foodi in item.foodincludes]} for item in pageitems.items]
 			state = 'successful'
 			reason = ''
 			response = jsonify({'state':state,
@@ -121,6 +121,41 @@ def sellerOrder(id):
 		else :
 			state = 'fail'
 			reason = 'unvalid seller'
+			availableOrderView = []
+			response = jsonify({'state':state,
+			                   'reason':reason,
+			                   'availableOrder':availableOrderView})
+			return response
+	except Exception, e:
+		print e
+		state = 'fail'
+		reason = 'exception'
+		availableOrderView = []
+		response = jsonify({'state':state,
+		                   'reason':reason,
+		                   'availableOrder':availableOrderView})
+		return response
+
+
+@orderList_route.route("/customerOrder/<int:id>", methods = ['POST'])
+def customerOrder(id):
+	try:
+		customerToken = request.json['token']
+		page = request.json['page']
+		customer = get_customer_user_by_token(customerToken)
+		if customer is not None:
+			pageitems = customer.order.filter_by(paystate = id).paginate(page, per_page = 3, error_out = False)
+			headImg = ''
+			availableOrderView = [{'orderInfo':{'orderId':item.token, 'planeEatTime':item.planeattime, 'price':item.price, 'payprice':item.payprice, 'orderTime':item.ordertime, 'paytime':item.paytime, 'peopleNumber':item.peoplenumber}, 'sellerInfo':{'Id':item.beordereduser.id, 'name':item.beordereduser.username, 'headImg':headImg, 'scores':item.beordereduser.scoles}, 'foodListInfo':[{'id':foodi.id, 'name':foodi.foods.name, 'number':foodi.number} for foodi in item.foodincludes]} for item in pageitems.items]
+			state = 'successful'
+			reason = ''
+			response = jsonify({'state':state,
+			                   'reason':reason,
+			                   'availableOrder':availableOrderView})
+			return response
+		else :
+			state = 'fail'
+			reason = 'unvalid customer'
 			availableOrderView = []
 			response = jsonify({'state':state,
 			                   'reason':reason,
