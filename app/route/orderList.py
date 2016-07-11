@@ -102,16 +102,16 @@ def commitOrderList():
 		return response
 
 
-@orderList_route.route("/availableOrder", methods = ['POST'])
-def availableOrder():
+@orderList_route.route("/sellerOrder/<int:id>", methods = ['POST'])
+def sellerOrder(id):
 	try:
 		sellerToken = request.json['token']
 		page = request.json['page']
 		seller = get_user_by_token(sellerToken)
 		if seller is not None:
-			pageitems = seller.beordered.filter_by(paystate = 0).paginate(page, per_page = 3, error_out = False)
+			pageitems = seller.beordered.filter_by(paystate = id).paginate(page, per_page = 3, error_out = False)
 			headImg = ''
-			availableOrderView = [{'orderId':item.token, 'planeEatTime':item.planeattime, 'customerInfo':{'Id':item.orderuser.id, 'name':item.orderuser.username, 'headImg':headImg, 'honesty':item.orderuser.honesty, 'friendly':item.orderuser.friendly, 'passion':item.orderuser.passion}, 'foodListInfo':[{'id':foodi.id, 'name':foodi.foods.name} for foodi in item.foodincludes]} for item in pageitems.items]
+			availableOrderView = [{'orderInfo':{'orderId':item.token, 'planeEatTime':item.planeattime, 'price':item.price, 'payprice':item.payprice}, 'customerInfo':{'Id':item.orderuser.id, 'name':item.orderuser.username, 'headImg':headImg, 'honesty':item.orderuser.honesty, 'friendly':item.orderuser.friendly, 'passion':item.orderuser.passion}, 'foodListInfo':[{'id':foodi.id, 'name':foodi.foods.name} for foodi in item.foodincludes]} for item in pageitems.items]
 			state = 'successful'
 			reason = ''
 			response = jsonify({'state':state,
@@ -135,4 +135,5 @@ def availableOrder():
 		                   'reason':reason,
 		                   'availableOrder':availableOrderView})
 		return response
+
 
