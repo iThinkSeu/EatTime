@@ -57,6 +57,7 @@ class orderList(db.Model):
 	planeattime = db.Column(db.DateTime)
 	paytime = db.Column(db.DateTime)
 	scores = db.Column(db.Float, default = 0)
+	dicount = db.Column(db.Float, default = 10)
 	#订单包含哪些食物
 	foodincludes =  db.relationship('orderListDetail', foreign_keys = [orderListDetail.orderlistid], backref = db.backref('orderlist', lazy='joined'), lazy='dynamic', cascade = 'all, delete-orphan')
 	def add(self):

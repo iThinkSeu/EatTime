@@ -261,6 +261,7 @@ def ratedOrder():
 			if order is not None:
 				if orser.paystate == 5:
 					order.scores = float(orderScores)
+					order.paystate = 6
 					db.session.commit(order)
 					state = 'successful'
 					reason = ''
@@ -282,6 +283,52 @@ def ratedOrder():
 	                   'state':state,
 	                   'reason':reason
 	                   })
+	return response
+
+@orderList_route.route('/sellerQueryPay', methods = ['POST'])
+def sellerQueryPay():
+	try :
+		sellerToken = request.json['token']
+		orderId = request.json['orderId']
+		discount = request.json['discount']
+		price = request.json['price']
+		payprice = reques.json['payprice']
+
+		seller = get_user_by_token(sellerToken)
+		if seller is not None:
+			order = seller.beordered.filter_by(token = orderId).first()
+			if order is not None:
+				if order.paystate == 1:
+					order.price = float(price)
+					order.discount = float(discount)
+					order.payprice = float(payprice)
+					order.paystate =  2
+					customer = order.orderuser
+					customer.friendly = 86
+					customer.honesty = 90
+					customer.passion = 90
+					db.session.commit(order)
+					db.session.commit(customer)
+					state = 'successful'
+					reason = ''
+				else :
+					state = 'fail'
+					reason = 'unvalid order state'
+			else :
+				state = 'fail'
+				reason = 'unvalid order'
+		else :
+			state = 'fail'
+			reason = 'unvalid seller'
+	except Exception, e:
+		state = 'fail'
+		reason = 'e'
+
+	response = jsonify({
+	                   'state':state,
+	                   'reason':reason
+	                   })
+
 	return response
 
 
