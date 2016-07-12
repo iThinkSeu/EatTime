@@ -1,4 +1,6 @@
 #-*- coding: UTF-8 -*- 
+import sys
+sys.path.append("..")
 from flask import Blueprint
 from flask import request,jsonify,json
 from models import *
@@ -95,10 +97,15 @@ def uploadavatar():
 				dst = '/home/www/uploadfiles/shiguang/cusAvatar/' + 'cusAvatar'+str(number)+'.jpg'
 			elif type == "12":
 				#type = 12 表示食物图片
-				imageurl = "119.29.233.72:3001/uploadfiles/shiguang/foodimg/"+'food'+str(number)+".jpg"
-				img = foodimage(foodid = number,imageurl = imageurl)
-				img.add()
-				dst = '/home/www/uploadfiles/shiguang/foodimg/' + 'food'+str(number)+'.jpg'
+				imageurl = "119.29.233.72:3001/uploadfiles/shiguang/foodimg/" + 'food'+str(number)+'.jpg'
+				img = food.query.filter_by(id=number).first()
+				if img!=None:
+					img.addimage(imageurl)
+				else:
+					return jsonify({'id':'',
+									'state':'fail',
+									'reason':'no this food'})
+				dst = '/home/www/uploadfiles/shiguang/foodimg/'  + 'food'+str(number)+'.jpg'
 			elif type == "13":
 				#type = 13 表示主页图片
 				dst = '/home/www/uploadfiles/shiguang/homeimg/' + 'homeimg'+str(number)+'.jpg'
