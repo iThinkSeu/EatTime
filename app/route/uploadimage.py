@@ -10,7 +10,7 @@ import uuid
 
 uploadImage_route = Blueprint('upload_image', __name__)
 
-@uploadImage_route.route("/uploadavatar", methods=['POST'])
+@uploadImage_route.route("/uploadpicture", methods=['POST'])
 def uploadavatar():
 	try:
 		print "avatar"
