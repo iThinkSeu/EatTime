@@ -62,19 +62,19 @@ def sellerHomePage():
     if seller is not None:
       #img = ''
       pageitems = seller.foods.paginate(page, per_page = 10, error_out = False)
-      foodList = [{'id':item.id, 'name':item.name, 'monthSales':item.monthsales, 'price':item.price, 'state':not item.disable, 'imgUrl': item.foodimgs.first().imageurl if item.foodimgs.first() is not None else ''} for item in pageitems.items]
+      foodList = [{'foodId':str(item.id), 'foodName':item.name, 'foodMonthSales':str(item.monthsales), 'foodPrice':str(item.price), 'disable': str(1) if item.disable else str(0), 'foodImg': item.foodimgs.first().imageurl if item.foodimgs.first() is not None else ''} for item in pageitems.items]
       state = 'successful'
       reason = ''
     else :
       state = 'fail'
       reason = 'un valid seller'
       foodList = []
+
   except Exception, e:
     print e
     state = 'fail'
     reason = 'exception'
     foodList = []
-
   response = jsonify({'state':state,
                       'reason':reason,
                       'foodList':foodList

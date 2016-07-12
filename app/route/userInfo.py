@@ -24,6 +24,7 @@ def userInfo():
     }
     try:
         token = request.json['token']
+        #customerToken = request.json['customerToken']
         user = User.query.filter_by(token =token).first()
         if user is None:
             errorDic = {"state":"fail",
