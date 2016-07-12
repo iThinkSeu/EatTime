@@ -189,6 +189,24 @@ class food(db.Model):
 			print e
 			db.session.rollback()
 			return 2
+	def addimage(self,imageurl):
+		try:
+			tmp = foodimage.query.filter_by(foodid = self.id,imageurl=imageurl).first()
+			if tmp==None:
+				f = foodimage(foodid = self.id,imageurl=imageurl)
+				db.session.add(f)
+				db.session.commit()
+				return 0
+			else:
+				tmp.foodid = self.id
+				imp.imageurl = imageurl
+				tmp.add()
+				return 1	
+		except Exception, e:
+			print e
+			db.session.rollback()
+			return 2	
+
 
 class topofficial(db.Model):
 	__tablename__ = 'topofficials'
