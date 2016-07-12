@@ -98,7 +98,7 @@ def uploadavatar():
 			elif type == "12":
 				#type = 12 表示食物图片
 				imageurl = "119.29.233.72:3001/uploadfiles/shiguang/foodimg/"+'food'+str(number)+".jpg"
-				img = food.query.filter_by(foodid=number).first()
+				img = food.query.filter_by(id=number).first()
 				if img!=None:
 					img.addimage(imageurl)
 				else:
