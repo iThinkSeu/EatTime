@@ -11,25 +11,20 @@ personInfo_route = Blueprint('personInfo', __name__)
 
 @personInfo_route.route('/personInfo', methods=['POST'])
 def personInfo():
-    state = "fail"
-    reason = ""
-    friendly = ""
-    passion = ""
-    honesty = ""
+    emptyDic = {
+         "friendly":"",
+         "honesty":"",
+         "passion":""}
 
     try:
         token = request.json['token']
         user = customerUser.query.filter_by(token =token).first()
         #没有用户信息
         if user is None:
-            state ="fail"
-            reason = "没有这个用户"
-            return jsonify({"state":state,
-                             "reason":reason,
-                             "friendly":"",
-                             "honesty":"",
-                             "passion":""
-                            })
+             errorDic = {"state":"fail",
+                         "reason":"没有此用户"}
+             errorDic = dict(errorDic,**emptyDic)
+             return jsonify(errorDic)
 
         friendly = user.friendly
         honesty = user.honesty
@@ -37,18 +32,14 @@ def personInfo():
 
         state = "successful"
         reason = ""
-
-    except Exception, e:
-        state = "fail"
-        reason = "服务器异常"
-        friendly = ""
-        passion = ""
-        honesty = ""
-
-
-    return jsonify({"state":state,
+        return jsonify({"state":state,
                      "reason":reason,
                      "friendly":friendly,
                      "honesty":honesty,
-                     "passion":passion
-                        })
+                     "passion":passion})
+
+    except Exception, e:
+        errorDic = {"state":"fail",
+                    "reason":"服务器异常"}
+        errorDic = dict(errorDic,**emptyDic)
+        return jsonify(errorDic)
