@@ -27,10 +27,10 @@ def editUserInfo():
             user.location = str(location)
 
         if request.json.get("personprice") != None:
-            user.personprice = str(request.json.get("personprice"))
+            user.personprice = float(request.json.get("personprice"))
 
         if request.json.get("scoles") != None:
-            user.scoles = str(request.json.get("scoles"))
+            user.scoles = float(request.json.get("scoles"))
 
         if request.json.get("confirm") != None:
             user.confirm = int(request.json.get("confirm"))

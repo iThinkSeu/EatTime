@@ -9,15 +9,11 @@ from models import User
 from models import food as Food
 
 #说明：客户端发送:page（可选）,token
-#homeImgUrl数据库中没有，先返回空
-#isconfirm同上
-#foodImgUrl同上
-
 userInfo_route = Blueprint('userInfo', __name__)
 
 @userInfo_route.route('/userInfo', methods=['POST'])
 def userInfo():
-    perPageCount = 1
+    perPageCount = 5
     try:
         token = request.json['token']
         user = User.query.filter_by(token =token).first()
@@ -29,14 +25,14 @@ def userInfo():
                              "username":"",
                              "homeimgurl":"",
                              "confirm":"",
-                             "foodlist":""
+                             "foodlist":"",
+                             "headimgurl":""
                             })
 
         username = user.username
-        #TODO
-        homeImgUrl = ""
-        isconfirm = ""
-
+        homeImgUrl = user.homeimgurl
+        isconfirm = user.confirm
+        headimgurl = user.headimgurl
         #若有page,做分页；
         page = request.json.get("page")
         if page is None:
@@ -57,8 +53,7 @@ def userInfo():
                                 "monthSales":food.monthsales,
                                 "price":food.price,
                                 "description":food.description,
-                                #TODO
-                                "imgurl":""
+                                "imgurl":food.foodimgs.first().imageurl
                         }
             foodList.append(foodJson)
             foodId += 1
@@ -72,9 +67,12 @@ def userInfo():
             "username":username,
             "homeimgurl":homeImgUrl,
             "confirm":isconfirm,
-            "foodlist":foodList
+            "foodlist":foodList,
+            "headimgurl":headimgurl
         })
+
     except Exception, e:
+        print e
         state = "fail"
         reason = "服务器异常"
         return jsonify({
@@ -83,7 +81,6 @@ def userInfo():
             "username":"",
             "homeimgurl":"",
             "confirm":"",
-            "foodlist":""
-        }
-
-        )
+            "foodlist":"",
+            "headimgurl":headimgurl
+        })
