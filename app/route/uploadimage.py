@@ -91,7 +91,7 @@ def uploadavatar():
 				dst = '/home/www/avatar/' + str(number)
 			elif type == "10":
 				#type = 10 表示商家头像
-				url = '119.29.233.72:3001/uploadfiles/shiguang/avatar/' + 'avatar'+str(number)+'.jpg'
+				url = '119.29.233.72:3001/uploadfiles/shiguang/avatar/' + 'avatar'+str(number)
 				u = User.query.filter_by(id=number).first()
 				if u!=None:
 					u.headimgurl = url
@@ -100,10 +100,10 @@ def uploadavatar():
 					return jsonify({'id':'',
 									'state':'fail',
 									'reason':'no this id'})
-				dst = '/home/www/uploadfiles/shiguang/avatar/' + 'avatar'+str(number)+'.jpg'
+				dst = '/home/www/uploadfiles/shiguang/avatar/' + 'avatar'+str(number)
 			elif type == "11":
 				#type = 11 表示客户头像
-				dst = '/home/www/uploadfiles/shiguang/cusAvatar/' + 'cusAvatar'+str(number)+'.jpg'
+				dst = '/home/www/uploadfiles/shiguang/cusAvatar/' + 'cusAvatar'+str(number)
 			elif type == "12":
 				#type = 12 表示食物图片
 				imageurl = "119.29.233.72:3001/uploadfiles/shiguang/foodimg/" + 'food'+str(number)+'.jpg'
