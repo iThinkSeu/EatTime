@@ -23,7 +23,7 @@ def commitOrderList():
 		#price = request.json['price']
 		eatTime = request.json['planEatTime']
 		customerUser = get_customer_user_by_token(token)
-		seller = get_user_by_id(sellerId)
+		seller = get_user_by_token(sellerId)
 		if customerUser is None:
 			orderedTime = ''
 			planEatTime = ''
