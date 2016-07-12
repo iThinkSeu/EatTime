@@ -20,7 +20,7 @@ def customerHomePage():
     customer = get_customer_user_by_token(token)
     if customer is not None:
       pageitems = User.query.order_by(User.scoles.asc()).paginate(int(page), per_page = 5, error_out = False)
-      sellerView = [{'sellerId':item.id, 'sellerName':item.username, 'location':item.location if item.location is not None else '', 'monthSales':sum([fitem.monthsales for fitem in item.foods]), 'scores':item.scoles, 'personPrice':item.personprice, 'foodImg':item.foods.first().foodimgs.first().imageurl if item.foods.first() is not None and item.foods.first().foodimgs.first() is not None else '', 'headImg':item.headimgurl if item.headimgurl is not None else ''} for item in pageitems.items]
+      sellerView = [{'sellerId':item.token, 'sellerName':item.username, 'location':item.location if item.location is not None else '', 'monthSales':sum([fitem.monthsales for fitem in item.foods]), 'scores':item.scoles, 'personPrice':item.personprice, 'foodImg':item.foods.first().foodimgs.first().imageurl if item.foods.first() is not None and item.foods.first().foodimgs.first() is not None else '', 'headImg':item.headimgurl if item.headimgurl is not None else ''} for item in pageitems.items]
       bannerImgUrls = [{'imgUrls':item.imageurl, 'rank':item.rank} for item in topofficial.query.all()]
       state = 'successful'
       reason = ''
