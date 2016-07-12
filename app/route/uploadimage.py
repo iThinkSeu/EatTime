@@ -10,7 +10,7 @@ import uuid
 
 uploadImage_route = Blueprint('upload_image', __name__)
 
-@uploadImage_route.route("/uploadavatar", methods=['POST'])
+@uploadImage_route.route("/uploadpicture", methods=['POST'])
 def uploadavatar():
 	try:
 		print "avatar"
@@ -23,7 +23,6 @@ def uploadavatar():
 		src = request.form.get('avatar_path')
 		u = getuserinformation(token)
 		id = u.id
-		result = {}
 		try:
 			state = 'successful'
 			reason = ''
@@ -115,7 +114,6 @@ def uploadavatar():
 
 
 	response = jsonify({'id':id,
-						'result':result,
 						'state':state,
 						'reason':reason})
 	return response

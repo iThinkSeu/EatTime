@@ -73,7 +73,7 @@ def commitOrderList():
 					reason = 'database error@food'
 					response = jsonify({'orderListid':olderListid, 'state':state, 'reason':reason, 'orderedTime':orderedTime, 'planEatTime':planEatTime})
 					return response
-			#orderedTime = orderListTemp.ordertime
+			orderedTime = orderListTemp.ordertime
 			#minutes = timedelta(minutes=eatTime)
 			planEatTime = datetime.strptime(eatTime, "%Y-%m-%d %H:%M:%S")
 			orderListTemp.planeattime = planEatTime
