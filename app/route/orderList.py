@@ -189,7 +189,7 @@ def sellerOrder(id):
 		if seller is not None:
 			pageitems = seller.beordered.filter_by(paystate = id).paginate(page, per_page = 3, error_out = False)
 			headImg = ''
-			availableOrderView = [{'orderInfo':{'orderId':item.token, 'planeEatTime':item.planeattime, 'price':item.price, 'payprice':item.payprice, 'orderTime':item.ordertime, 'paytime':item.paytime, 'peopleNumber':item.peoplenumber}, 'customerInfo':{'Id':item.orderuser.id, 'name':item.orderuser.username, 'headImg':headImg, 'honesty':item.orderuser.honesty, 'friendly':item.orderuser.friendly, 'passion':item.orderuser.passion}, 'foodListInfo':[{'id':foodi.id, 'name':foodi.foods.name, 'number':foodi.number} for foodi in item.foodincludes]} for item in pageitems.items]
+			availableOrderView = [{'orderId':str(item.token), 'planeEatTime':item.planeattime.strftime("%Y-%m-%d %H:%M:%S"), 'orderPrice':str(item.price), 'orderPayPrice':str(item.payprice) if item.payprice is not None else '', 'orderTime':item.ordertime.strftime("%Y-%m-%d %H:%M:%S"), 'orderPayTime':item.paytime.strftime("%Y-%m-%d %H:%M:%S") if item.paytime is not None else '', 'orderPeopleNumber':str(item.peoplenumber), 'customerId':str(item.orderuser.id), 'customerName':str(item.orderuser.username), 'customerHeadImg':headImg, 'customerHonesty':str(item.orderuser.honesty), 'customerFriendly':str(item.orderuser.friendly), 'customerPassion':str(item.orderuser.passion), 'foodName':','.join([foodi.foods.name for foodi in item.foodincludes]), 'foodCounts':str(sum([foodi.number for foodi in item.foodincludes]))} for item in pageitems.items]
 			state = 'successful'
 			reason = ''
 			response = jsonify({'state':state,
@@ -224,7 +224,7 @@ def customerOrder(id):
 		if customer is not None:
 			pageitems = customer.order.filter_by(paystate = id).paginate(page, per_page = 3, error_out = False)
 			headImg = ''
-			availableOrderView = [{'orderInfo':{'orderId':item.token, 'planeEatTime':item.planeattime, 'price':item.price, 'payprice':item.payprice, 'orderTime':item.ordertime, 'paytime':item.paytime, 'peopleNumber':item.peoplenumber}, 'sellerInfo':{'Id':item.beordereduser.id, 'name':item.beordereduser.username, 'headImg':headImg, 'scores':item.beordereduser.scoles}, 'foodListInfo':[{'id':foodi.id, 'name':foodi.foods.name, 'number':foodi.number} for foodi in item.foodincludes]} for item in pageitems.items]
+			availableOrderView = [{'orderId':str(item.token), 'orderPlanEatTime':item.planeattime.strftime("%Y-%m-%d %H:%M:%S"), 'orderPrice':str(item.price), 'orderPayPrice':str(item.payprice) if item.payprice is not None else '', 'orderTime':item.ordertime.strftime("%Y-%m-%d %H:%M:%S"), 'orderPayTime':item.paytime.strftime("%Y-%m-%d %H:%M:%S") if item.paytime is not None else '', 'orderPeopleNumber':str(item.peoplenumber), 'sellerId':str(item.beordereduser.id), 'sellerName':str(item.beordereduser.username), 'sellerHeadImg':str(item.beordereduser.headimgurl), 'sellerScores':str(item.beordereduser.scoles), 'foodName':','.join([foodi.foods.name for foodi in item.foodincludes]), 'foodCounts':str(sum([foodi.number for foodi in item.foodincludes]))} for item in pageitems.items]
 			state = 'successful'
 			reason = ''
 			response = jsonify({'state':state,
