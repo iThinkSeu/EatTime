@@ -31,7 +31,7 @@ app = create_app()
 
 ##注册蓝本路由
 app.register_blueprint(loginRegister_route)  			#注册与登录
-app.register_blueprint(publishFood_route)
+app.register_blueprint(publishFood_route)				#
 app.register_blueprint(orderList_route)
 app.register_blueprint(homePage_route)
 
@@ -40,9 +40,10 @@ app.register_blueprint(userInfo_route)
 app.register_blueprint(editUserInfo_route)
 app.register_blueprint(editFood_route)
 
+#图片上传
 
 if __name__ == '__main__':
-	app.run(host=os.getenv('IP','0.0.0.0'),port=int(os.getenv('PORT',5000)),debug = True)
+	app.run(host=os.getenv('IP','0.0.0.0'),port=int(os.getenv('PORT',3000)),debug = True)
 
 
 

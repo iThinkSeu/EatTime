@@ -73,15 +73,15 @@ def commitOrderList():
 					reason = 'database error@food'
 					response = jsonify({'orderListid':olderListid, 'state':state, 'reason':reason, 'orderedTime':orderedTime, 'planEatTime':planEatTime})
 					return response
-			orderedTime = orderListTemp.ordertime
-			minutes = timedelta(minutes=eatTime)
-			planEatTime = orderedTime + minutes
+			#orderedTime = orderListTemp.ordertime
+			#minutes = timedelta(minutes=eatTime)
+			planEatTime = datetime.strptime(eatTime, "%Y-%m-%d %H:%M:%S")
 			orderListTemp.planeattime = planEatTime
 			orderListTemp.add()
 			olderListid = orderListTemp.token
 			state = 'successful'
 			reason = ''
-			response = jsonify({'orderListid':olderListid, 'state':state, 'reason':reason, 'orderedTime':orderedTime, 'planEatTime':planEatTime})
+			response = jsonify({'orderListid':olderListid, 'state':state, 'reason':reason, 'orderedTime':orderedTime.strftime("%Y-%m-%d %H:%M:%S"), 'planEatTime':planEatTime.strftime("%Y-%m-%d %H:%M:%S")})
 			return response
 		else :
 			orderedTime = ''
@@ -189,7 +189,7 @@ def sellerOrder(id):
 		if seller is not None:
 			pageitems = seller.beordered.filter_by(paystate = id).paginate(page, per_page = 3, error_out = False)
 			headImg = ''
-			availableOrderView = [{'orderInfo':{'orderId':item.token, 'planeEatTime':item.planeattime, 'price':item.price, 'payprice':item.payprice, 'orderTime':item.orderTime, 'paytime':item.paytime, 'peopleNumber':item.peoplenumber}, 'customerInfo':{'Id':item.orderuser.id, 'name':item.orderuser.username, 'headImg':headImg, 'honesty':item.orderuser.honesty, 'friendly':item.orderuser.friendly, 'passion':item.orderuser.passion}, 'foodListInfo':[{'id':foodi.id, 'name':foodi.foods.name, 'number':foodi.number} for foodi in item.foodincludes]} for item in pageitems.items]
+			availableOrderView = [{'orderInfo':{'orderId':item.token, 'planeEatTime':item.planeattime, 'price':item.price, 'payprice':item.payprice, 'orderTime':item.ordertime, 'paytime':item.paytime, 'peopleNumber':item.peoplenumber}, 'customerInfo':{'Id':item.orderuser.id, 'name':item.orderuser.username, 'headImg':headImg, 'honesty':item.orderuser.honesty, 'friendly':item.orderuser.friendly, 'passion':item.orderuser.passion}, 'foodListInfo':[{'id':foodi.id, 'name':foodi.foods.name, 'number':foodi.number} for foodi in item.foodincludes]} for item in pageitems.items]
 			state = 'successful'
 			reason = ''
 			response = jsonify({'state':state,
