@@ -93,6 +93,8 @@ class User(db.Model):
 	headimgurl = db.Column(db.String(256))
 	identity = db.Column(db.String(256))
 	sex = db.Column(db.String(32))
+	logitude = db.Column(db.Float)
+	altitude = db.Column(db.Float)
 	foods = db.relationship('food',backref = 'foodauthor', lazy = 'dynamic')
 	beordered =  db.relationship('orderList', foreign_keys = [orderList.orderedid], backref = db.backref('beordereduser', lazy='joined'), lazy='dynamic', cascade = 'all, delete-orphan')
 
@@ -149,6 +151,8 @@ class customerUser(db.Model):
 	honesty = db.Column(db.Float) #信誉度
 	friendly = db.Column(db.Float)
 	passion = db.Column(db.Float)
+	logitude = db.Column(db.Float)
+	altitude = db.Column(db.Float)
 	order =  db.relationship('orderList', foreign_keys = [orderList.orderid], backref = db.backref('orderuser', lazy='joined'), lazy='dynamic', cascade = 'all, delete-orphan')
 
 	def add(self):
