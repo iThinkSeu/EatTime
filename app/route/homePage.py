@@ -57,7 +57,7 @@ def customerHomePage():
 def sellerHomePage():
   try:
     sellerToken = request.json['token']
-    page = request.json['page']
+    page = int(request.json['page'])
     seller = get_user_by_token(sellerToken)
     if seller is not None:
       #img = ''
