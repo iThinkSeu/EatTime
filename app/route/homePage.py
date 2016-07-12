@@ -60,9 +60,9 @@ def sellerHomePage():
     page = request.json['page']
     seller = get_user_by_token(sellerToken)
     if seller is not None:
-      img = ''
+      #img = ''
       pageitems = seller.foods.paginate(page, per_page = 10, error_out = False)
-      foodList = [{'id':item.id, 'name':item.name, 'monthsales':item.monthsales, 'price':item.price, 'state':not item.disable, 'imgUrl':img} for item in pageitems.items]
+      foodList = [{'id':item.id, 'name':item.name, 'monthSales':item.monthsales, 'price':item.price, 'state':not item.disable, 'imgUrl': item.foodimgs.first().imageurl} for item in pageitems.items]
       state = 'successful'
       reason = ''
     else :

@@ -189,7 +189,7 @@ def sellerOrder(id):
 		if seller is not None:
 			pageitems = seller.beordered.filter_by(paystate = id).paginate(page, per_page = 3, error_out = False)
 			headImg = ''
-			availableOrderView = [{'orderInfo':{'orderId':item.token, 'planeEatTime':item.planeattime, 'price':item.price, 'payprice':item.payprice, 'orderTime':item.orderTime, 'paytime':item.paytime, 'peopleNumber':item.peoplenumber}, 'customerInfo':{'Id':item.orderuser.id, 'name':item.orderuser.username, 'headImg':headImg, 'honesty':item.orderuser.honesty, 'friendly':item.orderuser.friendly, 'passion':item.orderuser.passion}, 'foodListInfo':[{'id':foodi.id, 'name':foodi.foods.name, 'number':foodi.number} for foodi in item.foodincludes]} for item in pageitems.items]
+			availableOrderView = [{'orderInfo':{'orderId':item.token, 'planeEatTime':item.planeattime, 'price':item.price, 'payprice':item.payprice, 'orderTime':item.ordertime, 'paytime':item.paytime, 'peopleNumber':item.peoplenumber}, 'customerInfo':{'Id':item.orderuser.id, 'name':item.orderuser.username, 'headImg':headImg, 'honesty':item.orderuser.honesty, 'friendly':item.orderuser.friendly, 'passion':item.orderuser.passion}, 'foodListInfo':[{'id':foodi.id, 'name':foodi.foods.name, 'number':foodi.number} for foodi in item.foodincludes]} for item in pageitems.items]
 			state = 'successful'
 			reason = ''
 			response = jsonify({'state':state,
