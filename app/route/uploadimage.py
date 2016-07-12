@@ -89,23 +89,23 @@ def uploadavatar():
 				dst = '/home/www/avatar/' + str(id)
 			elif type == "10":
 				#type = 10 表示食光
-				dst = '/home/www/static/shiguang/avatar/' + str(number)
+				dst = '/home/www/uploadfiles/shiguang/avatar/' + str(number)
 			elif type == "11":
 				#type = 11 表示食光
-				dst = '/home/www/static/shiguang/cusAvatar/' + str(number)
+				dst = '/home/www/uploadfiles/shiguang/cusAvatar/' + str(number)
 			elif type == "12":
 				#type = 12 表示食光
-				dst = '/home/www/static/shiguang/foodimg/' + str(number)
+				dst = '/home/www/uploadfiles/shiguang/foodimg/' + str(number)
 			elif type == "13":
 				#type = 13 表示食光
-				dst = '/home/www/static/shiguang/homeimg/' + str(number)
+				dst = '/home/www/uploadfiles/shiguang/homeimg/' + str(number)
 			elif type == "14":
 				#type = 14 表示食光
-				dst = '/home/www/static/shiguang/top/' + str(number)
+				dst = '/home/www/uploadfiles/shiguang/top/' + str(number)
 			else:
 				state = 'fail'
 				reason = 'no this type'				
-				dst = '/home/www/picture/temp/' + str(id)
+				dst = '/home/www/uploadfiles/temp/' + str(id)
 			'''
 			if os.path.exists(dst):
 				os.remove(dst)

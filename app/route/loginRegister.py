@@ -232,14 +232,6 @@ def appregister():
 		password = request.json.get('password','')
 		token = ''
 		id = ''
-		temp = checkName(username)
-		if temp==False:
-			response = jsonify({
-								'id':'',
-								'state':'fail',
-								'reason':'用户名不能包含中文且至少要两个字母',
-								'token':'chinese'})
-			return response
 		token= hashToken(username,password)
 		u=User(username=username,password=password,token=token)
 		if u.isExistedusername() == 0:
