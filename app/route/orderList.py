@@ -211,7 +211,7 @@ def sellerOrder(id):
 def customerOrder(id):
 	try:
 		customerToken = request.json['token']
-		page = (int)request.json['page']
+		page = int(request.json['page'])
 		customer = get_customer_user_by_token(customerToken)
 		if customer is not None:
 			pageitems = customer.order.filter_by(paystate = id).paginate(page, per_page = 3, error_out = False)
