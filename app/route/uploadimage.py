@@ -96,7 +96,7 @@ def uploadavatar():
 			elif type == "12":
 				#type = 12 表示食物图片
 				imageurl = "119.29.233.72:3001/uploadfiles/shiguang/foodimg/"+'food'+str(number)+".jpg"
-				img = foodimage(foodid = number,imageurl = imgeurl)
+				img = foodimage(foodid = number,imageurl = imageurl)
 				img.add()
 				dst = '/home/www/uploadfiles/shiguang/foodimg/' + 'food'+str(number)+'.jpg'
 			elif type == "13":
