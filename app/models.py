@@ -132,6 +132,14 @@ class User(db.Model):
 			print e
 			db.session.rollback()
 			return 2
+	def addchange(self):
+		try:
+			db.session.add(self)
+			db.session.execute('set names utf8mb4')
+			db.session.commit()
+		except Exception, e:
+			print e
+			db.session.rollback()
 class customerUser(db.Model):
 	__tablename__ = "customerusers"
 	id = db.Column(db.Integer,primary_key=True)
@@ -152,6 +160,15 @@ class customerUser(db.Model):
 				return 0
 			else:
 				return 1
+		except Exception, e:
+			print e
+			db.session.rollback()
+			return 2
+	def addchange(self):
+		try:
+			db.session.add(self)
+			db.session.execute('set names utf8mb4')
+			db.session.commit()
 		except Exception, e:
 			print e
 			db.session.rollback()
