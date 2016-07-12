@@ -167,7 +167,6 @@ class customerUser(db.Model):
 			db.session.rollback()
 			return 2,None
 
-db.relationship
 class food(db.Model):
 	__tablename__ = "foods"
 	id = db.Column(db.Integer,primary_key = True)
