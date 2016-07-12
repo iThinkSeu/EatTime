@@ -86,22 +86,25 @@ def uploadavatar():
 				fp.thumbnail((200,200))
 				fp.save(dst + '_thumbnail.jpg')
 				#为了兼容性加的东西
-				dst = '/home/www/avatar/' + str(id)
+				dst = '/home/www/avatar/' + str(number)
 			elif type == "10":
 				#type = 10 表示食光
-				dst = '/home/www/uploadfiles/shiguang/avatar/' + str(number)
+				dst = '/home/www/uploadfiles/shiguang/avatar/' + 'avatar'+str(number)+'.jpg'
 			elif type == "11":
 				#type = 11 表示食光
-				dst = '/home/www/uploadfiles/shiguang/cusAvatar/' + str(number)
+				dst = '/home/www/uploadfiles/shiguang/cusAvatar/' + 'cusAvatar'+str(number)+'.jpg'
 			elif type == "12":
-				#type = 12 表示食光
-				dst = '/home/www/uploadfiles/shiguang/foodimg/' + str(number)
+				#type = 12 表示食物图片
+				imageurl = "119.29.233.72:3001/uploadfiles/shiguang/foodimg/"+'food'+str(number)+".jpg"
+				img = foodimg(foodid = number,imageurl = imgeurl)
+				img.add()
+				dst = '/home/www/uploadfiles/shiguang/foodimg/' + 'food'+str(number)+'.jpg'
 			elif type == "13":
-				#type = 13 表示食光
-				dst = '/home/www/uploadfiles/shiguang/homeimg/' + str(number)
+				#type = 13 表示主页图片
+				dst = '/home/www/uploadfiles/shiguang/homeimg/' + 'homeimg'+str(number)+'.jpg'
 			elif type == "14":
-				#type = 14 表示食光
-				dst = '/home/www/uploadfiles/shiguang/top/' + str(number)
+				#type = 14 表示滑动图片
+				dst = '/home/www/uploadfiles/shiguang/top/' + 'homeimg'+str(number)+'.jpg'
 			else:
 				state = 'fail'
 				reason = 'no this type'				
