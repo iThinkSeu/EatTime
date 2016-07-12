@@ -15,10 +15,10 @@ orderList_route = Blueprint('orderList', __name__)
 
 @orderList_route.route("/commitOrderList",methods=['POST'])
 def commitOrderList():
-	try:
+	#try:
 		token = request.json['token']
 		sellerId = request.json.get('sellerId','')
-		foodList = request.json.get('foodList',[])
+		foodList = eval(request.json.get('foodList',''))
 		peoplenumber = request.json.get('peopleNumer', 1)
 		#price = request.json['price']
 		eatTime = request.json['planEatTime']
@@ -91,15 +91,7 @@ def commitOrderList():
 			reason = 'database error@orderList'
 			response = jsonify({'orderListid':olderListid, 'state':state, 'reason':reason, 'orderedTime':orderedTime, 'planEatTime':planEatTime})
 			return response
-	except Exception, e:
-		print e
-		orderedTime = ''
-		planEatTime = ''
-		olderListid = ''
-		state = 'fail'
-		reason = 'exception'
-		response = jsonify({'orderListid':olderListid, 'state':state, 'reason':reason, 'orderedTime':orderedTime, 'planEatTime':planEatTime})
-		return response
+
 
 @orderList_route.route("/sellerCancelOrder", methods = ['POST'])
 def sellerCancelOrder():

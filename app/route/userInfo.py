@@ -39,11 +39,10 @@ def userInfo():
         #若有page,做分页；
         page = request.json.get("page")
         if page is None:
-            foodId = 1
+
             foods = user.foods
         else:
             page = int(page)
-            foodId = 1 + (page-1) * perPageCount
             foods = user.foods.paginate(page =page,per_page = perPageCount,error_out=False)
             foods = foods.items
 
@@ -55,14 +54,13 @@ def userInfo():
                 imgurl =""
             else:
                 imgurl = food.foodimgs.first().imageurl
-            foodDic = {"foodid":foodId,
+            foodDic = {"foodid":food.id,
                         "foodname":food.name,
                         "monthSales":food.monthsales,
                         "price":food.price,
                         "description":food.description,
                         "imgurl": imgurl}
             foodList.append(foodDic)
-            foodId += 1
 
         #成功返回return
         state = "successful"
