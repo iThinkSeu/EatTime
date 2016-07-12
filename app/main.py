@@ -24,8 +24,10 @@ from route.personInfo import personInfo_route
 from route.userInfo import userInfo_route
 from route.editUserInfo import editUserInfo_route
 from route.editFood import editFood_route
+from route.confirmUser import confirmUser_route
 
 from route.uploadimage import uploadImage_route
+
 app = create_app()
 
 
@@ -40,8 +42,9 @@ app.register_blueprint(personInfo_route)
 app.register_blueprint(userInfo_route)
 app.register_blueprint(editUserInfo_route)
 app.register_blueprint(editFood_route)
+app.register_blueprint(confirmUser_route)
 
-#图片上传
+#图片上传 
 app.register_blueprint(uploadImage_route)
 
 if __name__ == '__main__':

@@ -10,7 +10,32 @@ import uuid
 
 uploadImage_route = Blueprint('upload_image', __name__)
 
-@uploadImage_route.route("/uploadavatar", methods=['POST'])
+def thumnail_enhanced(image, width, height):
+	try:
+		if hasattr(image, '_getexif'):
+			for orientation in ExifTags.TAGS.keys():
+				if ExifTags.TAGS[orientation] == 'Orientation':
+					break 
+			e = image._getexif()
+			if e is not None:
+				exif = dict(e.items())
+				orientation = exif.get(orientation, None)
+				if orientation is None: return
+
+				if orientation == 3: image = image.transpose(Image.ROTATE_180)
+				elif orientation == 6: image = image.transpose(Image.ROTATE_270)
+				elif orientation == 8: image = image.transpose(Image.ROTATE_90)
+
+		# image.thumbnail((width, height), Image.ANTIALIAS)
+		# background = Image.new('RGBA', (width, height), (255, 255, 255, 0))
+		# background.paste(image,((width - image.size[0]) / 2, (height - image.size[1]) / 2))
+		return ImageOps.fit(image, (width, height), Image.ANTIALIAS)
+
+	except:
+		return
+
+
+@uploadImage_route.route("/uploadpicture", methods=['POST'])
 def uploadavatar():
 	try:
 		print "avatar"
@@ -22,8 +47,7 @@ def uploadavatar():
 		usertype = jsonstring.get('usertype','')
 		src = request.form.get('avatar_path')
 		u = getuserinformation(token)
-		id = u.id
-		result = {}
+		id = ''
 		try:
 			state = 'successful'
 			reason = ''
@@ -115,7 +139,6 @@ def uploadavatar():
 
 
 	response = jsonify({'id':id,
-						'result':result,
 						'state':state,
 						'reason':reason})
 	return response

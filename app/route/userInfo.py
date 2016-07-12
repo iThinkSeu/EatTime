@@ -19,7 +19,8 @@ def userInfo():
         "homeimgurl":"",
         "confirm":"",
         "foodlist":"",
-        "headimgurl":""
+        "headimgurl":"",
+        "location" : ""
     }
     try:
         token = request.json['token']
@@ -34,6 +35,7 @@ def userInfo():
         homeImgUrl = user.homeimgurl
         isconfirm = user.confirm
         headimgurl = user.headimgurl
+        location = user.location
         #若有page,做分页；
         page = request.json.get("page")
         if page is None:
@@ -72,8 +74,8 @@ def userInfo():
             "homeimgurl":homeImgUrl,
             "confirm":isconfirm,
             "foodlist":foodList,
-            "headimgurl":headimgurl
-        })
+            "headimgurl":headimgurl,
+            "location":location})
 
     except Exception, e:
         print e
