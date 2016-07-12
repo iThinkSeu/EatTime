@@ -22,7 +22,7 @@ def uploadavatar():
 		usertype = jsonstring.get('usertype','')
 		src = request.form.get('avatar_path')
 		u = getuserinformation(token)
-		id = u.id
+		id = ''
 		try:
 			state = 'successful'
 			reason = ''
