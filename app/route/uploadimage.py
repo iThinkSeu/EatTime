@@ -23,7 +23,6 @@ def uploadavatar():
 		src = request.form.get('avatar_path')
 		u = getuserinformation(token)
 		id = u.id
-		result = {}
 		try:
 			state = 'successful'
 			reason = ''
@@ -115,7 +114,6 @@ def uploadavatar():
 
 
 	response = jsonify({'id':id,
-						'result':result,
 						'state':state,
 						'reason':reason})
 	return response
