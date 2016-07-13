@@ -69,7 +69,7 @@ def register_user():
 				state = 'successful'
 				reason = ''
 				token = hashToken(str(phone), password+str(code))
-				u = User(username = phone, password = password, token = token, phone = phone)
+				u = User(username = phone, password = password, token = token)
 				u.add()
 				id = getuserinformation(token).id
 
@@ -83,6 +83,79 @@ def register_user():
 		reason = '服务器异常'
 
 	return jsonify({'state':state, 'reason':reason, 'token':token, 'id':id})
+
+
+@loginRegister_route.route('/sendsmscodecus', methods=['POST'])
+def sendsmscodecus():
+	try:
+		phone = request.json['phone']
+		type_flag = request.json['type']
+		u = customerUser.query.filter_by(username=phone).first()
+		if u or str(type_flag) == '1':
+			state = 'successful'
+			reason = ''
+			code = str(random.randint(100000, 999999))
+			if str(type_flag) == '1' or str(type_flag) == '2':
+				rv = send_sms_code_by_type(str(phone), code, str(type_flag))
+				if rv != 0:
+					state = 'fail'
+					reason = '验证码发送失败'
+				else:
+					p = checkMsg.query.filter_by(phone = str(phone)).first()
+					if p is None:
+						sms_code = checkMsg(phone=str(phone), code=code)
+						sms_code.add()
+					else:
+						p.code = code
+						p.timestamp = datetime.now()
+						p.add()
+			else:
+				state = 'fail'
+				reason = 'invalid'
+		else:
+			state = 'fail'
+			reason = '该手机号尚未注册'
+	except Exception, e:
+		print e
+		state = 'fail'
+		reason = '服务器异常'
+
+	print state, reason
+	return jsonify({'state':state, 'reason':reason})
+
+@loginRegister_route.route('/registerphonecus', methods=['POST'])
+def registerphonecus():
+	try:
+		id = ''
+		token = ''
+		phone = request.json['phone']
+		password = request.json['password']
+		code = request.json['code']
+		u = customerUser.query.filter_by(username = str(phone)).first()
+		if u is None:
+			p = checkMsg.query.filter_by(phone=str(phone)).order_by(checkMsg.timestamp.desc()).first()
+			if p is None or p.code != str(code) or (datetime.now()-p.timestamp > timedelta(minutes=5)):
+				state = 'fail'
+				reason = '验证码无效'
+			else:
+				state = 'successful'
+				reason = ''
+				token = hashToken(str(phone), password+str(code))
+				u = User(username = phone, password = password, token = token)
+				u.add()
+				id = getuserinformation(token).id
+
+
+		else:
+			state  = 'fail'
+			reason = '该手机号已被注册'
+	except Exception, e:
+		print e
+		state = 'fail'
+		reason = '服务器异常'
+
+	return jsonify({'state':state, 'reason':reason, 'token':token, 'id':id})
+
 
 @loginRegister_route.route('/resetpassword', methods=['POST'])
 def reset_password():
@@ -261,6 +334,42 @@ def applogin():
 		username = request.json['username']
 		password = request.json['password']
 		u=User(username=username,password=password)
+		if u.isExisted():
+			state = 'successful'
+			tmp = getTokeninformation(username)
+			token = tmp.token
+			id = tmp.id
+			reason = ''
+		else:
+			id=''
+			state = 'fail'
+			token = 'None'
+			reason = '用户名密码错误'
+	except Exception, e:
+		print "login error!!"
+		print e
+		username = ''
+		password = ''
+		state = 'fail'
+		reason='服务器异常'
+		token = 'None'
+		id = ''
+
+	response = jsonify({'id':id,
+						'state':state,
+						'username':username,
+						'reason':reason,
+						'token':token})
+	#print state, reason
+	return response
+
+
+@loginRegister_route.route("/cuslogin",methods=['POST'])
+def cuslogin():
+	try:
+		username = request.json['username']
+		password = request.json['password']
+		u=customerUser(username=username,password=password)
 		if u.isExisted():
 			state = 'successful'
 			tmp = getTokeninformation(username)
