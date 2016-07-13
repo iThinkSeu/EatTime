@@ -62,7 +62,7 @@ def register_user():
 		u = User.query.filter_by(username = str(phone)).first()
 		if u is None:
 			p = checkMsg.query.filter_by(phone=str(phone)).first()
-			if p is None or p.code != str(code) or (datetime.now()-p.timestamp > timedelta(minutes=5)):
+			if p is None or p.code != str(code):
 				state = 'fail'
 				reason = '验证码无效'
 			else:
