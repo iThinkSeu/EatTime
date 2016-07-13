@@ -8,6 +8,8 @@ from models import *
 from functions.hashmd5 import *
 from functions.sendMsg import *
 from functions.DBFunctions import *
+rom sqlalchemy import or_
+from sqlalchemy import and_
 from datetime import *
 
 
@@ -117,6 +119,7 @@ def sellerConfirmOrder():
 					state = 'successful'
 					reason = '该订单已经确认'
 					order.paystate = 1
+					db.session.add(order)
 					db.session.commit()
 			else :
 				state = 'fail'
@@ -206,7 +209,7 @@ def customerCancelOrder():
 			state = 'fail'
 			reason = '无效的用户'
 
-		validOrders = customer.order.filter(_or('paysate = 6' , 'paystate = 2')).order_by(orderList.paydatetime.desc()).limit(30).all()
+		validOrders = customer.order.filter(or_('paysate = 6' , 'paystate = 2')).order_by(orderList.paydatetime.desc()).limit(30).all()
 		cancelNum = 0
 		freeNum = 0
 		discountPrice = 0
@@ -224,6 +227,7 @@ def customerCancelOrder():
 		customer.friendly = 60 + freeNum / number * 40
 		customer.honesty = 100 - cancelNum / number * 100
 		customer.passion = 60 + (totalPrice - discountPrice) / totalPrice * 40
+		db.session.add(customer)
 		db.session.commit()
 	except Exception, e:
 		print e
@@ -333,7 +337,7 @@ def sellerRequestPay():
 					#order.paytime = datetime.now()
 					order.paystate =  7
 					customer = order.orderuser
-					validOrders = customer.order.filter(_or('paysate = 6' , 'paystate = 2')).order_by(orderList.paydatetime.desc()).limit(30).all()
+					validOrders = customer.order.filter(or_('paysate = 6' , 'paystate = 2')).order_by(orderList.paydatetime.desc()).limit(30).all()
 					cancelNum = 0
 					freeNum = 0
 					discountPrice = 0
@@ -351,6 +355,7 @@ def sellerRequestPay():
 					customer.friendly = 60 + freeNum / number * 40
 					customer.honesty = 100 - cancelNum / number * 100
 					customer.passion = 60 + (totalPrice - discountPrice) / totalPrice * 40
+					db.session.add(customer)
 					db.session.commit()
 					#db.session.commit(customer)
 					state = 'successful'
@@ -400,6 +405,7 @@ def customerConfirmPay():
 						reason = '感谢您的支付和评价'
 						order.paystate = 6
 						order.scores = float(orderScores)
+					db.session.add(order)
 					db.session.commit()
 				elif order.paystate == 1:
 					state = 'fail'
@@ -414,7 +420,7 @@ def customerConfirmPay():
 			state = 'fail'
 			reason = '无效的用户'
 
-		validOrders = customer.order.filter(_or('paysate = 6' , 'paystate = 2')).order_by(orderList.paydatetime.desc()).limit(30).all()
+		validOrders = customer.order.filter(or_('paysate = 6' , 'paystate = 2')).order_by(orderList.paydatetime.desc()).limit(30).all()
 		cancelNum = 0
 		freeNum = 0
 		discountPrice = 0
@@ -432,6 +438,7 @@ def customerConfirmPay():
 		customer.friendly = 60 + freeNum / number * 40
 		customer.honesty = 100 - cancelNum / number * 100
 		customer.passion = 60 + (totalPrice - discountPrice) / totalPrice * 40
+		db.session.add(customer)
 		db.session.commit()
 
 	except Exception, e:
@@ -458,6 +465,7 @@ def ratedOrder():
 				if order.paystate == 2:
 					order.scores = float(orderScores)
 					order.paystate = 6
+					db.session.add(order)
 					db.session.commit()
 					state = 'successful'
 					reason = '感谢您的评价'
