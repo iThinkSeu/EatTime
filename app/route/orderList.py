@@ -193,7 +193,7 @@ def customerCancelOrder():
 					order.add()
 					state = 'successful'
 					reason = '取消订单成功'
-				elif order.paystate == 1 or order.paytstate == 7:
+				elif order.paystate == 1 or order.paystate == 7:
 					state = 'fail'
 					reason = '对不起，您现在无权取消订单'
 				elif order.paystate == 2:
