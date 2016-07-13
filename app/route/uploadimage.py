@@ -135,7 +135,7 @@ def uploadavatar():
 				dst = '/home/www/uploadfiles/shiguang/top/' + 'top'+str(number)+'.jpg'
 			elif type == "15":
 				#type = -1 表示confirm image
-				url = '119.29.233.72:3001/uploadfiles/shiguang/cinfirm/' +str(number)+'.jpg'
+				url = '119.29.233.72:3001/uploadfiles/shiguang/confirm/' +str(number)+'.jpg'
 				if u!=None:
 					if number==1:
 						u.cookLifeimgurl = url
@@ -148,7 +148,7 @@ def uploadavatar():
 					return jsonify({'id':'',
 									'state':'fail',
 									'reason':'no this id'})			
-				dst = '/home/www/uploadfiles/shiguang/cinfirm/' +str(number)+'.jpg'
+				dst = '/home/www/uploadfiles/shiguang/confirm/' +str(number)+'.jpg'
 			else:
 				state = 'fail'
 				reason = 'no this type'				
