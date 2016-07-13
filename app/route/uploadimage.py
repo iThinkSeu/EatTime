@@ -44,12 +44,15 @@ def uploadavatar():
 		jsonstring = request.form.get('json')
 		jsonstring = json.loads(jsonstring)
 		token = jsonstring['token']
-		type = jsonstring['type'] 
+		type = jsonstring.get('type','')
+		print type+"test" 
 		number = jsonstring.get('number','')
 		usertype = jsonstring.get('usertype','')
 		src = request.form.get('avatar_path')
 		u = getuserinformation(token)
-		id = ''
+		id = '' 
+		print type
+		print "avatar2"
 		try:
 			state = 'successful'
 			reason = ''
@@ -91,7 +94,7 @@ def uploadavatar():
 				dst = '/home/www/avatar/' + str(number)
 			elif type == "10":
 				#type = 10 表示商家头像
-				url = '119.29.233.72:3001/uploadfiles/shiguang/avatar/' + 'avatar'+str(number)
+				url = 'http://119.29.233.72:3001/uploadfiles/shiguang/avatar/' + 'avatar'+str(number)
 				u = User.query.filter_by(id=number).first()
 				if u!=None:
 					u.headimgurl = url
@@ -106,7 +109,7 @@ def uploadavatar():
 				dst = '/home/www/uploadfiles/shiguang/cusAvatar/' + 'cusAvatar'+str(number)
 			elif type == "12":
 				#type = 12 表示食物图片
-				imageurl = "119.29.233.72:3001/uploadfiles/shiguang/foodimg/" + 'food'+str(number)+'.jpg'
+				imageurl = "http://119.29.233.72:3001/uploadfiles/shiguang/foodimg/" + 'food'+str(number)+'.jpg'
 				img = food.query.filter_by(id=number).first()
 				if img!=None:
 					img.addimage(imageurl)
@@ -117,7 +120,7 @@ def uploadavatar():
 				dst = '/home/www/uploadfiles/shiguang/foodimg/'  + 'food'+str(number)+'.jpg'
 			elif type == "13":
 				#type = 13 表示主页图片
-				url = '119.29.233.72:3001/uploadfiles/shiguang/homeimg/' + 'homeimg'+str(number)+'.jpg'
+				url = 'http://119.29.233.72:3001/uploadfiles/shiguang/homeimg/' + 'homeimg'+str(number)+'.jpg'
 				u = User.query.filter_by(id=number).first()
 				if u!=None:
 					u.homeimgurl = url
@@ -130,10 +133,26 @@ def uploadavatar():
 			elif type == "14":
 				#type = 14 表示滑动图片
 				dst = '/home/www/uploadfiles/shiguang/top/' + 'top'+str(number)+'.jpg'
+			elif type == "15":
+				#type = -1 表示confirm image
+				url = 'http://119.29.233.72:3001/uploadfiles/shiguang/confirm/' +str(number)+'.jpg'
+				if u!=None:
+					if number==1:
+						u.cookLifeimgurl = url
+					elif number ==2:
+						u.cookEnvirimgurl = url
+					else:
+						u.bestFoodimgurl = url
+					u.addchange()
+				else:
+					return jsonify({'id':'',
+									'state':'fail',
+									'reason':'no this id'})			
+				dst = '/home/www/uploadfiles/shiguang/confirm/' +str(number)+'.jpg'
 			else:
 				state = 'fail'
 				reason = 'no this type'				
-				dst = '/home/www/uploadfiles/temp/' + str(id)
+				dst = '/home/www/uploadfiles/temp/' +str(number)+'.jpg'
 			'''
 			if os.path.exists(dst):
 				os.remove(dst)

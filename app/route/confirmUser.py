@@ -19,9 +19,11 @@ def confirmUser():
             errorDic = {"state":"fail",
                         "reason":"用户不存在"}
             return jsonify(errorDic)
-        user.username = request.json["userName"]
-        user.identity = str(request.json["userIdentity"])
-        user.location = request.json["userLocation"]
+        user.username = request.json.get("userName","")
+        user.identity = str(request.json.get("userIdentity",""))
+        user.location = request.json.get("userLocation","")
+        user.altitude = float(request.json.get("altitude",""))
+        user.logitude = float(request.json.get("longitude",""))
         if request.json.get("userSex") is None:
             pass
         else:

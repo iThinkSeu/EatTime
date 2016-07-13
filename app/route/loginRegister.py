@@ -69,7 +69,7 @@ def register_user():
 				state = 'successful'
 				reason = ''
 				token = hashToken(str(phone), password+str(code))
-				u = User(username = phone, password = password, token = token, phone = phone)
+				u = User(username = phone, password = password, token = token)
 				u.add()
 				id = getuserinformation(token).id
 
