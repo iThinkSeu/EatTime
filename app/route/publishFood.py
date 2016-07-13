@@ -21,22 +21,27 @@ def publishFood():
     if seller is None:
       state = 'fail'
       reason = 'unvalid user'
+      foodId = ''
     else:
       newFood = food(authorid = seller.id, name = foodName, description = description, price = price, disable = 0, monthsales = 0)
       if seller.publishfood(newFood) == 0:
         state = 'successful'
         reason = ''
+        foodId = str(newFood.id)
       else :
         state = 'fail'
         reason = 'database error'
+        foodId = ''
 
   except Exception, e:
     #print 'Need Token!'
     print e
     state = 'fail'
-    reason = 'need token'
+    reason = 'e'
+    foodId - ''
   response = jsonify({'state':state,
-                       'reason':reason})
+                       'reason':reason,
+                       'foodId':foodId})
 
   return response
 
