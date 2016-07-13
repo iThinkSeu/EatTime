@@ -13,6 +13,7 @@ from models import customerUser
 personInfo_route = Blueprint('personInfo', __name__)
 #cache = Cache(personInfo_route, config={'CACHE_TYPE': 'simple'})
 
+
 @personInfo_route.route('/personInfo', methods=['POST'])
 #@cache.cached(timeout=50, key_prefix='cached_psnInfo_')
 def personInfo():

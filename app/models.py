@@ -151,9 +151,9 @@ class customerUser(db.Model):
 	username = db.Column(db.String(32),unique = True)
 	password = db.Column(db.String(32))
 	token = db.Column(db.String(32))
-	honesty = db.Column(db.Float) #信誉度
-	friendly = db.Column(db.Float)
-	passion = db.Column(db.Float)
+	honesty = db.Column(db.Float, default = 100) #信誉度
+	friendly = db.Column(db.Float, default = 100)
+	passion = db.Column(db.Float, default = 100)
 	logitude = db.Column(db.Float)
 	altitude = db.Column(db.Float)
 	order =  db.relationship('orderList', foreign_keys = [orderList.orderid], backref = db.backref('orderuser', lazy='joined'), lazy='dynamic', cascade = 'all, delete-orphan')
