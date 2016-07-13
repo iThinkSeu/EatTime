@@ -31,7 +31,7 @@ from route.uploadimage import uploadImage_route
 from flask.ext.cache import Cache
 
 app = create_app()
-cache = Cache(app, config={'CACHE_TYPE': 'simple'})
+memCache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 
 
