@@ -49,7 +49,8 @@ def uploadavatar():
 		usertype = jsonstring.get('usertype','')
 		src = request.form.get('avatar_path')
 		u = getuserinformation(token)
-		id = ''
+		id = '' 
+		print type
 		try:
 			state = 'successful'
 			reason = ''
