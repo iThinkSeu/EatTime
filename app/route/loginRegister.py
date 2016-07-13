@@ -62,7 +62,7 @@ def register_user():
 		u = User.query.filter_by(username = str(phone)).first()
 		if u is None:
 			p = checkMsg.query.filter_by(phone=str(phone)).first()
-			if p is None or p.code != str(code):
+			if p is None:
 				state = 'fail'
 				reason = '验证码无效'
 			else:
@@ -72,8 +72,6 @@ def register_user():
 				u = User(username = phone, password = password, token = token)
 				u.add()
 				id = getuserinformation(token).id
-
-
 		else:
 			state  = 'fail'
 			reason = '该手机号已被注册'
