@@ -8,7 +8,7 @@ from models import *
 from functions.hashmd5 import *
 from functions.sendMsg import *
 from functions.DBFunctions import *
-rom sqlalchemy import or_
+from sqlalchemy import or_
 from sqlalchemy import and_
 from datetime import *
 
