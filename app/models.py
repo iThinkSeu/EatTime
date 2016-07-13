@@ -95,6 +95,10 @@ class User(db.Model):
 	sex = db.Column(db.String(32))
 	logitude = db.Column(db.Float)
 	altitude = db.Column(db.Float)
+	nickname = db.Column(db.String(32))
+	cookLifeimgurl = db.Column(db.String(256))
+	cookEnvirimgurl = db.Column(db.String(256))
+	bestFoodimgurl = db.Column(db.String(256))
 	foods = db.relationship('food',backref = 'foodauthor', lazy = 'dynamic')
 	beordered =  db.relationship('orderList', foreign_keys = [orderList.orderedid], backref = db.backref('beordereduser', lazy='joined'), lazy='dynamic', cascade = 'all, delete-orphan')
 
@@ -264,8 +268,6 @@ class checkMsg(db.Model):
 	phone = db.Column(db.String(64))
 	code = db.Column(db.String(32))
 	timestamp = db.Column(db.DateTime,default = datetime.now)
-
-
 	def add(self):
 		try:
 			db.session.add(self)
