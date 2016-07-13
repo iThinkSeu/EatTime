@@ -6,6 +6,7 @@ import traceback
 import sys
 sys.path.append("..")
 from models import customerUser
+from functions.DBFunctions import *
 #from flask.ext.cache import Cache
 
 
@@ -69,3 +70,34 @@ def personInfo():
                     "reason":"服务器异常"}
         errorDic = dict(errorDic,**emptyDic)
         return jsonify(errorDic)
+
+
+@personInfo_route.route('/sellerInfo', methods = ['POST'])
+def sellerInfo():
+    try :
+        sellerToken = request.json['token']
+        seller = get_user_by_token(sellerToken)
+        if seller is not None:
+            state = 'successful'
+            reason = ''
+            headImg = seller.headimgurl
+            confirm = seller.confirm
+        else:
+            state = 'fail'
+            reason = '无效的用户'
+            headImg = ''
+            confirm = ''
+    except Exception, e:
+        print e
+        state = 'fail'
+        reason = '服务器异常'
+        headImg = ''
+        confirm = ''
+    response = jsonify({
+                       'state':state,
+                       'reason':reason,
+                       'headImg':headImg,
+                       'confirm':str(int(confirm))
+                       })
+
+    return response
