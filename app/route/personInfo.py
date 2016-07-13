@@ -7,6 +7,8 @@ import sys
 sys.path.append("..")
 from models import customerUser
 from functions.DBFunctions import *
+from sqlalchemy import or_
+from sqlalchemy import and_
 #from flask.ext.cache import Cache
 
 
@@ -33,7 +35,7 @@ def personInfo():
              errorDic = dict(errorDic,**emptyDic)
              return jsonify(errorDic)
 
-        validOrders = user.order.filter(_or('paysate = 6' , 'paystate = 2')).order_by(orderList.paydatetime.desc()).limit(30).all()
+        validOrders = user.order.filter(or_('paystate = 6' , 'paystate = 2')).order_by(orderList.paydatetime.desc()).limit(30).all()
         cancelNum = 0
         freeNum = 0
         discountPrice = 0
@@ -66,6 +68,7 @@ def personInfo():
                      "passion":passion})
 
     except Exception, e:
+        print e
         errorDic = {"state":"fail",
                     "reason":"服务器异常"}
         errorDic = dict(errorDic,**emptyDic)
