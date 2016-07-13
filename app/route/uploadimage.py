@@ -44,13 +44,15 @@ def uploadavatar():
 		jsonstring = request.form.get('json')
 		jsonstring = json.loads(jsonstring)
 		token = jsonstring['token']
-		type = jsonstring['type'] 
+		type = jsonstring.get('type','')
+		print type+"test" 
 		number = jsonstring.get('number','')
 		usertype = jsonstring.get('usertype','')
 		src = request.form.get('avatar_path')
 		u = getuserinformation(token)
 		id = '' 
 		print type
+		print "avatar2"
 		try:
 			state = 'successful'
 			reason = ''
@@ -131,7 +133,7 @@ def uploadavatar():
 			elif type == "14":
 				#type = 14 表示滑动图片
 				dst = '/home/www/uploadfiles/shiguang/top/' + 'top'+str(number)+'.jpg'
-			elif type == "-1":
+			elif type == "15":
 				#type = -1 表示confirm image
 				url = '119.29.233.72:3001/uploadfiles/shiguang/cinfirm/' +str(number)+'.jpg'
 				if u!=None:
@@ -150,7 +152,7 @@ def uploadavatar():
 			else:
 				state = 'fail'
 				reason = 'no this type'				
-				dst = '/home/www/uploadfiles/temp/' + str(id)
+				dst = '/home/www/uploadfiles/temp/' +str(number)+'.jpg'
 			'''
 			if os.path.exists(dst):
 				os.remove(dst)
