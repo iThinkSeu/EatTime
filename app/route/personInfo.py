@@ -6,12 +6,15 @@ import traceback
 import sys
 sys.path.append("..")
 from models import customerUser
-from main import memCache
+#from flask.ext.cache import Cache
+
+
 
 personInfo_route = Blueprint('personInfo', __name__)
+#cache = Cache(personInfo_route, config={'CACHE_TYPE': 'simple'})
 
-@cache.cached(timeout=50, key_prefix='cached_psnInfo_')
 @personInfo_route.route('/personInfo', methods=['POST'])
+#@cache.cached(timeout=50, key_prefix='cached_psnInfo_')
 def personInfo():
     emptyDic = {
          "friendly":"",
