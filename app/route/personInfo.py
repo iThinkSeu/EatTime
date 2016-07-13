@@ -35,7 +35,7 @@ def personInfo():
              errorDic = dict(errorDic,**emptyDic)
              return jsonify(errorDic)
 
-        validOrders = user.order.filter(or_('paystate = 6' , 'paystate = 2')).order_by(orderList.paydatetime.desc()).limit(30).all()
+        validOrders = user.order.filter(or_('paystate = 6' , 'paystate = 2')).order_by(orderList.paytime.desc()).limit(30).all()
         cancelNum = 0
         freeNum = 0
         discountPrice = 0
