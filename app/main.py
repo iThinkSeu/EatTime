@@ -28,10 +28,10 @@ from route.confirmUser import confirmUser_route
 
 from route.uploadimage import uploadImage_route
 
-from flask.ext.cache import Cache
+
 
 app = create_app()
-cache = Cache(app, config={'CACHE_TYPE': 'simple'})
+
 
 
 
