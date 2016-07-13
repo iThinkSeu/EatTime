@@ -18,6 +18,7 @@ orderList_route = Blueprint('orderList', __name__)
 @orderList_route.route("/commitOrderList",methods=['POST'])
 def commitOrderList():
 	try:
+		db.session.commit()
 		token = request.json['token']
 		sellerId = request.json.get('sellerId','')
 		foodList = eval(request.json.get('foodList',''))
@@ -110,6 +111,7 @@ def commitOrderList():
 @orderList_route.route('/sellerConfirmOrder', methods = ['POST'])
 def sellerConfirmOrder():
 	try:
+		db.session.commit()
 		sellerToken = request.json['token']
 		orderId = request.json['orderId']
 
@@ -144,6 +146,7 @@ def sellerConfirmOrder():
 @orderList_route.route("/sellerCancelOrder", methods = ['POST'])
 def sellerCancelOrder():
 	try:
+		db.session.commit()
 		sellerToken = request.json['token']
 		orderId = request.json['orderId']
 		seller = get_user_by_token(sellerToken)
@@ -187,6 +190,7 @@ def sellerCancelOrder():
 @orderList_route.route("/customerCancelOrder", methods = ['POST'])
 def customerCancelOrder():
 	try:
+		db.session.commit()
 		customerToken = request.json['token']
 		orderId = request.json['orderId']
 		customer = get_customer_user_by_token(customerToken)
@@ -248,6 +252,7 @@ def customerCancelOrder():
 @orderList_route.route("/sellerOrder/<int:id>", methods = ['POST'])
 def sellerOrder(id):
 	try:
+		db.session.commit()
 		sellerToken = request.json['token']
 		page = int(request.json['page'])
 		seller = get_user_by_token(sellerToken)
@@ -288,10 +293,10 @@ def sellerOrder(id):
 @orderList_route.route("/customerOrder/<int:id>", methods = ['POST'])
 def customerOrder(id):
 	#try:
+		db.session.commit()
 		customerToken = request.json['token']
 		page = int(request.json['page'])
 		customer = get_customer_user_by_token(customerToken)
-		#db.session.commit()
 		if customer is not None:
 			if id == 0:
 				pageitems = customer.order.filter("paystate = 0").order_by(orderList.ordertime.desc()).paginate(page, per_page = 3, error_out = False)
@@ -327,6 +332,7 @@ def customerOrder(id):
 @orderList_route.route('/sellerRequestPay', methods = ['POST'])
 def sellerRequestPay():
 	try :
+		db.session.commit()
 		sellerToken = request.json['token']
 		orderId = request.json['orderId']
 		discount = request.json['discount']
@@ -394,6 +400,7 @@ def sellerRequestPay():
 @orderList_route.route('/customerConfirmPay', methods = ['POST'])
 def customerConfirmPay():
 	try:
+		db.session.commit()
 		customerToken = request.json['token']
 		orderId = request.json['orderId']
 		orderScores = request.json.get('orderScores', '')
@@ -462,6 +469,7 @@ def customerConfirmPay():
 @orderList_route.route('/ratedOrder', methods = ['POST'])
 def ratedOrder():
 	try :
+		db.session.commit()
 		customerToken = request.json['token']
 		orderId = request.json['orderId']
 		orderScores = request.json['orderScores']
