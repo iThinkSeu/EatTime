@@ -60,7 +60,8 @@ def commitOrderList():
 		flag, orderListTemp = customerUser.orderuser(seller, peoplenumber, price, 0)
 
 		orderListTemp.token = generatemd5(str(orderListTemp.id))
-		orderListTemp.add()
+		db.session.add(orderListTemp)
+		db.session.commit()
 
 
 
@@ -79,7 +80,8 @@ def commitOrderList():
 			#minutes = timedelta(minutes=eatTime)
 			planEatTime = datetime.strptime(eatTime, "%Y-%m-%d %H:%M:%S")
 			orderListTemp.planeattime = planEatTime
-			orderListTemp.add()
+			db.session.add(orderListTemp)
+			db.session.commit()
 			olderListid = orderListTemp.token
 			state = 'successful'
 			reason = '已成功下单'
@@ -150,12 +152,15 @@ def sellerCancelOrder():
 			if order is not None:
 				if order.paystate == 0:
 					order.paystate = 3
-					order.add()
+					db.session.add(order)
+					db.session.commit()
+					#order.add()
 					state = 'successful'
 					reason = '订单取消成功'
 				elif order.paystate == 1 or order.paystate == 7:
 					order.paystate = 5
-					order.add()
+					db.session.add(order)
+					db.session.commit()
 					state = 'successful'
 					reason = '订单取消成功'
 				elif order.paystate == 2:
@@ -190,7 +195,8 @@ def customerCancelOrder():
 			if order is not None:
 				if order.paystate == 0:
 					order.paystate = 4
-					order.add()
+					db.session.add(order)
+					db.session.commit()
 					state = 'successful'
 					reason = '取消订单成功'
 				elif order.paystate == 1 or order.paystate == 7:
@@ -285,7 +291,7 @@ def customerOrder(id):
 		customerToken = request.json['token']
 		page = int(request.json['page'])
 		customer = get_customer_user_by_token(customerToken)
-		db.session.commit()
+		#db.session.commit()
 		if customer is not None:
 			if id == 0:
 				pageitems = customer.order.filter("paystate = 0").order_by(orderList.ordertime.desc()).paginate(page, per_page = 3, error_out = False)

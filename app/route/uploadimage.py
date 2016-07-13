@@ -1,4 +1,4 @@
-#-*- coding: UTF-8 -*- 
+#-*- coding: UTF-8 -*-
 import sys
 sys.path.append("..")
 from flask import Blueprint
@@ -17,7 +17,7 @@ def thumnail_enhanced(image, width, height):
 		if hasattr(image, '_getexif'):
 			for orientation in ExifTags.TAGS.keys():
 				if ExifTags.TAGS[orientation] == 'Orientation':
-					break 
+					break
 			e = image._getexif()
 			if e is not None:
 				exif = dict(e.items())
@@ -45,12 +45,12 @@ def uploadavatar():
 		jsonstring = json.loads(jsonstring)
 		token = jsonstring['token']
 		type = jsonstring.get('type','')
-		print type+"test" 
+		print type+"test"
 		number = jsonstring.get('number','')
 		usertype = jsonstring.get('usertype','')
 		src = request.form.get('avatar_path')
 		u = getuserinformation(token)
-		id = '' 
+		id = ''
 		print type
 		print "avatar2"
 		try:
@@ -147,11 +147,11 @@ def uploadavatar():
 				else:
 					return jsonify({'id':'',
 									'state':'fail',
-									'reason':'no this id'})			
+									'reason':'no this id'})
 				dst = '/home/www/uploadfiles/shiguang/confirm/' +str(number)+'.jpg'
 			else:
 				state = 'fail'
-				reason = 'no this type'				
+				reason = 'no this type'
 				dst = '/home/www/uploadfiles/temp/' +str(number)+'.jpg'
 			'''
 			if os.path.exists(dst):
@@ -175,11 +175,11 @@ def uploadavatar():
 					fp.save(dst + '_thumbnail.jpg')
 
 		except Exception, e:
-			print e 
+			print e
 			state = 'fail'
 			reason = '上传图片失败,请重传'
 	except Exception, e:
-		print e 
+		print e
 		id=''
 		state = 'fail'
 		reason= '异常,请重传'
