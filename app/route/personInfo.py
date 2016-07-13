@@ -10,7 +10,7 @@ from main import memCache
 
 personInfo_route = Blueprint('personInfo', __name__)
 
-@cache.cached(timeout=50, key_prefix='cached_psnInfo_')
+#@cache.cached(timeout=50, key_prefix='cached_psnInfo_')
 @personInfo_route.route('/personInfo', methods=['POST'])
 def personInfo():
     emptyDic = {

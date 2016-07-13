@@ -24,10 +24,10 @@ def customerHomePage():
     customer = get_customer_user_by_token(token)
     if customer is not None:
       #没有位置信息，按照评价排序
-      if request.json.get("altitude") is None and request.json.get("longitude") is None:
+      if request.json.get("latitude") is None or request.json.get("longitude") is None:
           pageitems = User.query.order_by(User.scoles.asc()).paginate(int(page), per_page = 5, error_out = False).items
       else:
-          user_distance = ordey_by_distance(float(request.json["altitude"]),float(request.json["longitude"]))
+          user_distance = ordey_by_distance(float(request.json["latitude"]),float(request.json["longitude"]))
           count = 0
           users = []
           distance = []
@@ -41,7 +41,7 @@ def customerHomePage():
       sellerView = [{'sellerId':item.token, 'sellerName':item.username, 'location':item.location if item.location is not None else '', 'monthSales':sum([fitem.monthsales for fitem in item.foods]), 'scores':item.scoles, 'personPrice':item.personprice, 'foodImg':item.foods.first().foodimgs.first().imageurl if item.foods.first() is not None and item.foods.first().foodimgs.first() is not None else '', 'headImg':item.headimgurl if item.headimgurl is not None else ''} for item in pageitems]
 
       #收到坐标位置，添加返回字段distance
-      if request.json.get("altitude") is None and request.json.get("longitude") is None:
+      if request.json.get("latitude") is None and request.json.get("longitude") is None:
             pass
       else:
             for i in range(backCount):

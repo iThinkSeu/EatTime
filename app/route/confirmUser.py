@@ -22,7 +22,7 @@ def confirmUser():
         user.username = request.json.get("userName","")
         user.identity = str(request.json.get("userIdentity",""))
         user.location = request.json.get("userLocation","")
-        user.altitude = float(request.json.get("altitude",0))
+        user.altitude = float(request.json.get("latitude",0))
         user.logitude = float(request.json.get("longitude",0))
         if request.json.get("userSex") is None:
             pass
