@@ -13,10 +13,9 @@ publishFood_route = Blueprint('publishFood', __name__)
 def publishFood():
   try:
     token = request.json['token']
-    print token
     foodName = request.json['foodName']
     description = request.json.get('description','该商家很懒，并没有添加描述~')
-    price = request.json['price']
+    price = float(request.json['price'])
 
     seller = get_user_by_token(token)
     if seller is None:

@@ -222,11 +222,11 @@ class food(db.Model):
 				tmp.foodid = self.id
 				imp.imageurl = imageurl
 				tmp.add()
-				return 1	
+				return 1
 		except Exception, e:
 			print e
 			db.session.rollback()
-			return 2	
+			return 2
 
 
 class topofficial(db.Model):
