@@ -20,7 +20,7 @@ def publishFood():
     seller = get_user_by_token(token)
     if seller is None:
       state = 'fail'
-      reason = 'unvalid user'
+      reason = '无效的用户'
       foodId = ''
     else:
       newFood = food(authorid = seller.id, name = foodName, description = description, price = price, disable = 0, monthsales = 0)
@@ -30,14 +30,14 @@ def publishFood():
         foodId = str(newFood.id)
       else :
         state = 'fail'
-        reason = 'database error'
+        reason = '数据库异常'
         foodId = ''
 
   except Exception, e:
     #print 'Need Token!'
     print e
     state = 'fail'
-    reason = 'e'
+    reason = '服务器异常'
     foodId - ''
   response = jsonify({'state':state,
                        'reason':reason,

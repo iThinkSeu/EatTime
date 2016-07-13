@@ -29,7 +29,7 @@ def commitOrderList():
 			planEatTime = ''
 			olderListid = ''
 			state = 'fail'
-			reason = 'unvalid customer user'
+			reason = '无效的用户'
 			response = jsonify({'orderListid':olderListid, 'state':state, 'reason':reason, 'orderedTime':orderedTime, 'planEatTime':planEatTime})
 			return response
 
@@ -38,7 +38,7 @@ def commitOrderList():
 			planEatTime = ''
 			olderListid = ''
 			state = 'fail'
-			reason = 'unvalid seller user'
+			reason = '被不存在该商家'
 			response = jsonify({'orderListid':olderListid, 'state':state, 'reason':reason, 'orderedTime':orderedTime, 'planEatTime':planEatTime})
 			return response
 
@@ -50,7 +50,7 @@ def commitOrderList():
 					planEatTime = ''
 					olderListid = ''
 					state = 'fail'
-					reason = 'unvalid food: ' + str(foodid)
+					reason = '无效的食物，食物编号： ' + str(foodid)
 					response = jsonify({'orderListid':olderListid, 'state':state, 'reason':reason, 'orderedTime':orderedTime, 'planEatTime':planEatTime})
 					return response
 				price += (food.price * number)
@@ -70,7 +70,7 @@ def commitOrderList():
 					planEatTime = ''
 					olderListid = ''
 					state = 'fail'
-					reason = 'database error@food'
+					reason = '食物数据库异常'
 					response = jsonify({'orderListid':olderListid, 'state':state, 'reason':reason, 'orderedTime':orderedTime, 'planEatTime':planEatTime})
 					return response
 			orderedTime = orderListTemp.ordertime
@@ -80,7 +80,7 @@ def commitOrderList():
 			orderListTemp.add()
 			olderListid = orderListTemp.token
 			state = 'successful'
-			reason = ''
+			reason = '已成功下单'
 			response = jsonify({'orderListid':olderListid, 'state':state, 'reason':reason, 'orderedTime':orderedTime.strftime("%Y-%m-%d %H:%M:%S"), 'planEatTime':planEatTime.strftime("%Y-%m-%d %H:%M:%S")})
 			return response
 		else :
@@ -88,7 +88,7 @@ def commitOrderList():
 			planEatTime = ''
 			olderListid = ''
 			state = 'fail'
-			reason = 'database error@orderList'
+			reason = '订单数据库异常'
 			response = jsonify({'orderListid':olderListid, 'state':state, 'reason':reason, 'orderedTime':orderedTime, 'planEatTime':planEatTime})
 			return response
 
@@ -98,11 +98,42 @@ def commitOrderList():
 		planEatTime = ''
 		olderListid = ''
 		state = 'fail'
-		reason = 'e'
+		reason = '服务器异常'
 		response = jsonify({'orderListid':olderListid, 'state':state, 'reason':reason, 'orderedTime':orderedTime, 'planEatTime':planEatTime})
 		return response
 
 
+@orderList_route.route('/sellerConfirmOrder', methods = ['POST'])
+def sellerConfirmOrder():
+	try:
+		sellerToken = request.json['token']
+		orderId = request.json['orderId']
+
+		seller = get_user_by_token(sellerToken)
+		if seller is not None:
+			order = seller.beordered.filter_by(token = orderId).first()
+			if order is not None:
+				if order.paystate == 0:
+					state = 'successful'
+					reason = '该订单已经确认'
+					order.paystate = 1
+					db.session.commit()
+			else :
+				state = 'fail'
+				reason = '无效的订单'
+		else :
+			state = 'fail'
+			reason = '无效的用户'
+	except Exception, e:
+		print e
+		state = 'fail'
+		reason = '服务器异常'
+
+	response = jsonify({
+	                   "state":state,
+	                   "reason":reason
+	                   })
+	return response
 
 
 @orderList_route.route("/sellerCancelOrder", methods = ['POST'])
@@ -118,28 +149,28 @@ def sellerCancelOrder():
 					order.paystate = 3
 					order.add()
 					state = 'successful'
-					reason = ''
-				elif order.paystate == 1:
+					reason = '订单取消成功'
+				elif order.paystate == 1 or order.paystate == 7:
 					order.paystate = 5
 					order.add()
 					state = 'successful'
-					reason = ''
+					reason = '订单取消成功'
 				elif order.paystate == 2:
 					state = 'fail'
-					reason = 'cannot cancel completed order'
+					reason = '不能取消已经完成的订单'
 				else :
 					state = 'fail'
-					reason = 'the order has already been cancelled'
+					reason = '该订单已经被取消'
 			else :
 				state = 'fail'
-				reason = 'unvalid order'
+				reason = '无效的订单'
 		else :
 			state = 'fail'
-			reason = 'unvalid seller'
+			reason = '无效的用户'
 	except Exception, e:
 		print e
 		state = 'fail'
-		reason = 'exception'
+		reason = '服务器异常'
 
 	response = jsonify({'state':state,
 	                   'reason':reason})
@@ -158,26 +189,26 @@ def customerCancelOrder():
 					order.paystate = 4
 					order.add()
 					state = 'successful'
-					reason = ''
-				elif order.paystate == 1:
+					reason = '取消订单成功'
+				elif order.paystate == 1 or order.paytstate == 7:
 					state = 'fail'
-					reason = 'permisssion denied'
+					reason = '对不起，您现在无权取消订单'
 				elif order.paystate == 2:
 					state = 'fail'
-					reason = 'cannot cancel completed order'
+					reason = '不能取消已经完成的订单'
 				else :
 					state = 'fail'
-					reason = 'the order has already been cancelled'
+					reason = '该订单已经被取消'
 			else :
 				state = 'fail'
-				reason = 'unvalid order'
+				reason = '无效的订单'
 		else :
 			state = 'fail'
-			reason = 'unvalid customer'
+			reason = '无效的用户'
 	except Exception, e:
 		print e
 		state = 'fail'
-		reason = 'exception'
+		reason = '服务器异常'
 
 	response = jsonify({'state':state,
 	                   'reason':reason})
@@ -191,7 +222,12 @@ def sellerOrder(id):
 		page = request.json['page']
 		seller = get_user_by_token(sellerToken)
 		if seller is not None:
-			pageitems = seller.beordered.filter_by(paystate = id).paginate(page, per_page = 3, error_out = False)
+			if id == 0:
+				pageitems = seller.beordered.filter(paystate == 0).paginate(page, per_page = 3, error_out = False)
+			elif id == 1:
+				pageitems = seller.beordered.filter(paystate == 1 or paystate == 7).paginate(page, per_page = 3, error_out = False)
+			else:
+				pageitems = seller.beordered.filter(paystate == 2 or paystate == 6).paginate(page, per_page = 3, error_out = False)
 			headImg = ''
 			availableOrderView = [{'orderId':str(item.token), 'planeEatTime':item.planeattime.strftime("%Y-%m-%d %H:%M:%S"), 'orderPrice':str(item.price), 'orderPayPrice':str(item.payprice) if item.payprice is not None else '', 'orderTime':item.ordertime.strftime("%Y-%m-%d %H:%M:%S"), 'orderPayTime':item.paytime.strftime("%Y-%m-%d %H:%M:%S") if item.paytime is not None else '', 'orderPeopleNumber':str(item.peoplenumber), 'customerId':str(item.orderuser.id), 'customerName':str(item.orderuser.username), 'customerHeadImg':headImg, 'customerHonesty':str(item.orderuser.honesty), 'customerFriendly':str(item.orderuser.friendly), 'customerPassion':str(item.orderuser.passion), 'foodName':','.join([foodi.foods.name for foodi in item.foodincludes]), 'foodCounts':str(sum([foodi.number for foodi in item.foodincludes]))} for item in pageitems.items]
 			state = 'successful'
@@ -202,7 +238,7 @@ def sellerOrder(id):
 			return response
 		else :
 			state = 'fail'
-			reason = 'unvalid seller'
+			reason = '无效的用户'
 			availableOrderView = []
 			response = jsonify({'state':state,
 			                   'reason':reason,
@@ -211,7 +247,7 @@ def sellerOrder(id):
 	except Exception, e:
 		print e
 		state = 'fail'
-		reason = 'exception'
+		reason = '服务器异常'
 		availableOrderView = []
 		response = jsonify({'state':state,
 		                   'reason':reason,
@@ -226,8 +262,12 @@ def customerOrder(id):
 		page = int(request.json['page'])
 		customer = get_customer_user_by_token(customerToken)
 		if customer is not None:
-			pageitems = customer.order.filter_by(paystate = id).paginate(page, per_page = 3, error_out = False)
-			headImg = ''
+			if id == 0:
+				pageitems = seller.beordered.filter(paystate == 0).paginate(page, per_page = 3, error_out = False)
+			elif id == 1:
+				pageitems = seller.beordered.filter(paystate == 1 or paystate == 7).paginate(page, per_page = 3, error_out = False)
+			else:
+				pageitems = seller.beordered.filter(paystate == 2 or paystate == 6).paginate(page, per_page = 3, error_out = False)
 			availableOrderView = [{'orderId':str(item.token), 'orderPlanEatTime':item.planeattime.strftime("%Y-%m-%d %H:%M:%S"), 'orderPrice':str(item.price), 'orderPayPrice':str(item.payprice) if item.payprice is not None else '', 'orderTime':item.ordertime.strftime("%Y-%m-%d %H:%M:%S"), 'orderPayTime':item.paytime.strftime("%Y-%m-%d %H:%M:%S") if item.paytime is not None else '', 'orderPeopleNumber':str(item.peoplenumber), 'sellerId':str(item.beordereduser.id), 'sellerName':str(item.beordereduser.username), 'sellerHeadImg':str(item.beordereduser.headimgurl), 'sellerScores':str(item.beordereduser.scoles), 'foodName':','.join([foodi.foods.name for foodi in item.foodincludes]), 'foodCounts':str(sum([foodi.number for foodi in item.foodincludes]))} for item in pageitems.items]
 			state = 'successful'
 			reason = ''
@@ -237,7 +277,7 @@ def customerOrder(id):
 			return response
 		else :
 			state = 'fail'
-			reason = 'unvalid customer'
+			reason = '无效的用户'
 			availableOrderView = []
 			response = jsonify({'state':state,
 			                   'reason':reason,
@@ -246,12 +286,105 @@ def customerOrder(id):
 	except Exception, e:
 		print e
 		state = 'fail'
-		reason = 'exception'
+		reason = '服务器异常'
 		availableOrderView = []
 		response = jsonify({'state':state,
 		                   'reason':reason,
 		                   'availableOrder':availableOrderView})
 		return response
+
+@orderList_route.route('/sellerRequestPay', methods = ['POST'])
+def sellerRequestPay():
+	try :
+		sellerToken = request.json['token']
+		orderId = request.json['orderId']
+		discount = request.json['discount']
+		price = request.json['price']
+		payprice = request.json['payprice']
+
+		seller = get_user_by_token(sellerToken)
+		if seller is not None:
+			order = seller.beordered.filter_by(token = orderId).first()
+			if order is not None:
+				if order.paystate == 1:
+					order.price = float(price)
+					order.discount = float(discount)
+					order.payprice = float(payprice)
+					#order.paytime = datetime.now()
+					order.paystate =  7
+					customer = order.orderuser
+					customer.friendly = 86
+					customer.honesty = 90
+					customer.passion = 90
+					db.session.commit()
+					#db.session.commit(customer)
+					state = 'successful'
+					reason = '请等待食客支付'
+				elif order.paystate == 7:
+					state = 'fail'
+					reason = '别急~食客将会马上支付'
+				else :
+					state = 'fail'
+					reason = '订单状态异常'
+			else :
+				state = 'fail'
+				reason = '无效的订单'
+		else :
+			state = 'fail'
+			reason = '无效的用户'
+	except Exception, e:
+		print e
+		state = 'fail'
+		reason = '服务器异常'
+
+	response = jsonify({
+	                   'state':state,
+	                   'reason':reason
+	                   })
+
+	return response
+
+@orderList_route.route('/customerConfirmPay', methods = ['POST'])
+def customerConfirmPay():
+	try:
+		customerToken = request.json['token']
+		orderId = request.json['orderId']
+		orderScores = request.json.get('orderScores', '')
+
+		customer = get_customer_user_by_token(customerToken)
+		if customer is not None:
+			order = customer.order.filter_by(token = orderId).first()
+			if order is not None:
+				if order.paystate == 7:
+					state = 'successful'
+					if orderScores == '':
+						reason = '支付成功'
+						order.paystate = 2
+					else:
+						reason = '感谢您的支付和评价'
+						order.paystate = 6
+						order.scores = float(orderSores)
+					db.session.commit()
+				elif order.paystate == 1:
+					state = 'fail'
+					reason = '请等商家发起支付流程！'
+			else :
+				state = 'fail'
+				reason = '无效的订单'
+		else :
+			state = 'fail'
+			reason = '无效的用户'
+
+	except Exception, e:
+		print e
+		state = 'fail'
+		reason = '服务器异常'
+
+	response = jsonify({
+	                   'state':state,
+	                   'reason':reason
+	                   })
+	return response
 
 @orderList_route.route('/ratedOrder', methods = ['POST'])
 def ratedOrder():
@@ -263,25 +396,25 @@ def ratedOrder():
 		if customer is not None:
 			order = customer.order.filter_by(token = orderId).first()
 			if order is not None:
-				if orser.paystate == 5:
+				if orser.paystate == 2:
 					order.scores = float(orderScores)
 					order.paystate = 6
-					db.session.commit(order)
+					db.session.commit()
 					state = 'successful'
-					reason = ''
+					reason = '感谢您的评价'
 				else :
 					state = 'fail'
-					reason = 'cannot rate uncompleted order'
+					reason = '不能评价未完成的订单'
 			else :
 				state = 'fail'
-				reason = 'unvalid order'
+				reason = '无效的订单'
 		else :
 			state = 'fail'
-			reason = 'un valid customer'
+			reason = '无效的用户'
 	except Exception, e:
 		print e
 		state = 'fail'
-		reason = 'e'
+		reason = '服务器异常'
 
 	response = jsonify({
 	                   'state':state,
@@ -289,50 +422,8 @@ def ratedOrder():
 	                   })
 	return response
 
-@orderList_route.route('/sellerQueryPay', methods = ['POST'])
-def sellerQueryPay():
-	try :
-		sellerToken = request.json['token']
-		orderId = request.json['orderId']
-		discount = request.json['discount']
-		price = request.json['price']
-		payprice = reques.json['payprice']
 
-		seller = get_user_by_token(sellerToken)
-		if seller is not None:
-			order = seller.beordered.filter_by(token = orderId).first()
-			if order is not None:
-				if order.paystate == 1:
-					order.price = float(price)
-					order.discount = float(discount)
-					order.payprice = float(payprice)
-					order.paystate =  2
-					customer = order.orderuser
-					customer.friendly = 86
-					customer.honesty = 90
-					customer.passion = 90
-					db.session.commit(order)
-					db.session.commit(customer)
-					state = 'successful'
-					reason = ''
-				else :
-					state = 'fail'
-					reason = 'unvalid order state'
-			else :
-				state = 'fail'
-				reason = 'unvalid order'
-		else :
-			state = 'fail'
-			reason = 'unvalid seller'
-	except Exception, e:
-		state = 'fail'
-		reason = 'e'
 
-	response = jsonify({
-	                   'state':state,
-	                   'reason':reason
-	                   })
 
-	return response
 
 
