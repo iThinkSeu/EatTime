@@ -101,7 +101,6 @@ class User(db.Model):
 	bestFoodimgurl = db.Column(db.String(256))
 	foods = db.relationship('food',backref = 'foodauthor', lazy = 'dynamic')
 	beordered =  db.relationship('orderList', foreign_keys = [orderList.orderedid], backref = db.backref('beordereduser', lazy='joined'), lazy='dynamic', cascade = 'all, delete-orphan')
-
 	def add(self):
 		try:
 			tempuser = User.query.filter_by(username=self.username).first()

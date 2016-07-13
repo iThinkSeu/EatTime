@@ -49,7 +49,8 @@ def uploadavatar():
 		usertype = jsonstring.get('usertype','')
 		src = request.form.get('avatar_path')
 		u = getuserinformation(token)
-		id = ''
+		id = '' 
+		print type
 		try:
 			state = 'successful'
 			reason = ''
@@ -130,6 +131,22 @@ def uploadavatar():
 			elif type == "14":
 				#type = 14 表示滑动图片
 				dst = '/home/www/uploadfiles/shiguang/top/' + 'top'+str(number)+'.jpg'
+			elif type == "15":
+				#type = 15 表示confirm image
+				url = '119.29.233.72:3001/uploadfiles/shiguang/cinfirm/' +str(number)+'.jpg'
+				if u!=None:
+					if number==1:
+						u.cookLifeimgurl = url
+					else if number ==2:
+						u.cookEnvirimgurl = url
+					else:
+						u.bestFoodimgurl = url
+					u.addchange()
+				else:
+					return jsonify({'id':'',
+									'state':'fail',
+									'reason':'no this id'})			
+				dst = '/home/www/uploadfiles/shiguang/cinfirm/' +str(number)+'.jpg'
 			else:
 				state = 'fail'
 				reason = 'no this type'				
