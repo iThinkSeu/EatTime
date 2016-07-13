@@ -258,11 +258,11 @@ def sellerOrder(id):
 		seller = get_user_by_token(sellerToken)
 		if seller is not None:
 			if id == 0:
-				pageitems = seller.beordered.filter("paystate = 0").order_by(orderList.ordertime.desc()).paginate(page, per_page = 3, error_out = False)
+				pageitems = seller.beordered.filter("paystate = 0").order_by(orderList.ordertime.desc()).paginate(page, per_page = 10, error_out = False)
 			elif id == 1:
-				pageitems = seller.beordered.filter(or_("paystate = 1" , "paystate = 7")).order_by(orderList.planeattime.desc()).paginate(page, per_page = 3, error_out = False)
+				pageitems = seller.beordered.filter(or_("paystate = 1" , "paystate = 7")).order_by(orderList.planeattime.desc()).paginate(page, per_page = 10, error_out = False)
 			else:
-				pageitems = seller.beordered.filter(or_("paystate = 2", "paystate = 6")).order_by(orderList.paytime.desc()).paginate(page, per_page = 3, error_out = False)
+				pageitems = seller.beordered.filter(or_("paystate = 2", "paystate = 6")).order_by(orderList.paytime.desc()).paginate(page, per_page = 10, error_out = False)
 			headImg = ''
 			availableOrderView = [{'orderId':item.token, 'planeEatTime':item.planeattime.strftime("%Y-%m-%d %H:%M:%S"), 'orderPrice':str(item.price), 'orderPayPrice':str(item.payprice) if item.payprice is not None else '', 'orderTime':item.ordertime.strftime("%Y-%m-%d %H:%M:%S"), 'orderPayTime':item.paytime.strftime("%Y-%m-%d %H:%M:%S") if item.paytime is not None else '', 'orderPeopleNumber':str(item.peoplenumber), 'customerId':str(item.orderuser.id), 'customerName':item.orderuser.username, 'customerHeadImg':headImg, 'customerHonesty':str(item.orderuser.honesty), 'customerFriendly':str(item.orderuser.friendly), 'customerPassion':str(item.orderuser.passion), 'foodName':','.join([foodi.foods.name for foodi in item.foodincludes]), 'foodCounts':str(sum([foodi.number for foodi in item.foodincludes]))} for item in pageitems.items]
 			state = 'successful'
@@ -299,11 +299,11 @@ def customerOrder(id):
 		customer = get_customer_user_by_token(customerToken)
 		if customer is not None:
 			if id == 0:
-				pageitems = customer.order.filter("paystate = 0").order_by(orderList.ordertime.desc()).paginate(page, per_page = 3, error_out = False)
+				pageitems = customer.order.filter("paystate = 0").order_by(orderList.ordertime.desc()).paginate(page, per_page = 10, error_out = False)
 			elif id == 1:
-				pageitems = customer.order.filter(or_("paystate = 1" , "paystate = 7")).order_by(orderList.planeattime.desc()).paginate(page, per_page = 3, error_out = False)
+				pageitems = customer.order.filter(or_("paystate = 1" , "paystate = 7")).order_by(orderList.planeattime.desc()).paginate(page, per_page = 10, error_out = False)
 			else:
-				pageitems = customer.order.filter(or_("paystate = 2", "paystate = 6")).order_by(orderList.paytime.desc()).paginate(page, per_page = 3, error_out = False)
+				pageitems = customer.order.filter(or_("paystate = 2", "paystate = 6")).order_by(orderList.paytime.desc()).paginate(page, per_page = 10, error_out = False)
 			availableOrderView = [{'paystate':str(item.paystate),'orderId':item.token, 'orderPlanEatTime':item.planeattime.strftime("%Y-%m-%d %H:%M:%S"), 'orderPrice':str(item.price), 'orderPayPrice':str(item.payprice) if item.payprice is not None else '', 'orderTime':item.ordertime.strftime("%Y-%m-%d %H:%M:%S"), 'orderPayTime':item.paytime.strftime("%Y-%m-%d %H:%M:%S") if item.paytime is not None else '', 'orderPeopleNumber':str(item.peoplenumber), 'sellerId':str(item.beordereduser.id), 'sellerName':item.beordereduser.username, 'sellerHeadImg':item.beordereduser.headimgurl, 'sellerScores':str(item.beordereduser.scoles), 'foodName':','.join([foodi.foods.name for foodi in item.foodincludes]), 'foodCounts':str(sum([foodi.number for foodi in item.foodincludes]))} for item in pageitems.items]
 			state = 'successful'
 			reason = ''
