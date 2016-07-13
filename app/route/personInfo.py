@@ -80,6 +80,8 @@ def sellerInfo():
         if seller is not None:
             state = 'successful'
             reason = ''
+            sellerName = seller.nickname if seller.nickname is not None else ''
+            sellerId = seller.id
             headImg = seller.headimgurl
             confirm = seller.confirm
         else:
@@ -87,17 +89,23 @@ def sellerInfo():
             reason = '无效的用户'
             headImg = ''
             confirm = ''
+            sellerName = ''
+            sellerId = ''
     except Exception, e:
         print e
         state = 'fail'
         reason = '服务器异常'
         headImg = ''
         confirm = ''
+        sellerName = ''
+        sellerId = ''
     response = jsonify({
                        'state':state,
                        'reason':reason,
                        'headImg':headImg,
-                       'confirm':str(int(confirm))
+                       'confirm':str(int(confirm)),
+                       'sellerName':sellerName,
+                       'sellerId':sellerId
                        })
 
     return response

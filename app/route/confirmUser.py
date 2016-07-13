@@ -19,7 +19,7 @@ def confirmUser():
             errorDic = {"state":"fail",
                         "reason":"用户不存在"}
             return jsonify(errorDic)
-        user.username = request.json.get("userName","")
+        user.nickname = request.json.get("userName","")
         user.identity = str(request.json.get("userIdentity",""))
         user.location = request.json.get("userLocation","")
         user.altitude = float(request.json.get("latitude",0))
