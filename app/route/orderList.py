@@ -285,6 +285,7 @@ def customerOrder(id):
 		customerToken = request.json['token']
 		page = int(request.json['page'])
 		customer = get_customer_user_by_token(customerToken)
+		db.session.commit()
 		if customer is not None:
 			if id == 0:
 				pageitems = customer.order.filter("paystate = 0").order_by(orderList.ordertime.desc()).paginate(page, per_page = 3, error_out = False)
