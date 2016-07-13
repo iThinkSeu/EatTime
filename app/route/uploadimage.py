@@ -131,8 +131,8 @@ def uploadavatar():
 			elif type == "14":
 				#type = 14 表示滑动图片
 				dst = '/home/www/uploadfiles/shiguang/top/' + 'top'+str(number)+'.jpg'
-			elif type == "15":
-				#type = 15 表示confirm image
+			elif type == "-1":
+				#type = -1 表示confirm image
 				url = '119.29.233.72:3001/uploadfiles/shiguang/cinfirm/' +str(number)+'.jpg'
 				if u!=None:
 					if number==1:
