@@ -139,7 +139,7 @@ def uploadavatar():
 				if u!=None:
 					if number==1:
 						u.cookLifeimgurl = url
-					else if number ==2:
+					elif number ==2:
 						u.cookEnvirimgurl = url
 					else:
 						u.bestFoodimgurl = url
