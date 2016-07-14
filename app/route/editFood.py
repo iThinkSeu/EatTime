@@ -45,6 +45,7 @@ def editFood():
             pass
         else:
             disable = int(request.json.get("disable"))
+            print disable
             if disable == 1:
                 food.disable = 1
             else:
