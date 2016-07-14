@@ -180,6 +180,18 @@ class customerUser(db.Model):
 			print e
 			db.session.rollback()
 			return 2
+	def isExisted(self):
+		tempuser = User.query.filter_by(username=self.username,password=self.password).first()
+		if tempuser is None:
+			return 0
+		else:
+			return 1
+	def isExistedusername(self):
+		tempuser = User.query.filter_by(username = self.username).first()
+		if tempuser is None:
+			return 0
+		else:
+			return 1
 	def orderuser(self,user,peoplenumber,price,paystate):
 		try:
 			lp = orderList(orderid = self.id, orderedid = user.id, peoplenumber = peoplenumber, price = price,  paystate = paystate)
