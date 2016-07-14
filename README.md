@@ -1,4 +1,4 @@
-# CloudeServer
-CloudeBLE
-蓝牙4.0服务器程序
-readme文档
+# 食光 RESRful API
+APP服务器程序
+Flask+Nginx+uwsgi
+Python
