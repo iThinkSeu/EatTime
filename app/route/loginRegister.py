@@ -376,7 +376,7 @@ def cuslogin():
 		username = request.json['username']
 		password = request.json['password']
 		u=customerUser(username=username,password=password)
-		if u.isExisted():
+		if u is not None:
 			state = 'successful'
 			tmp = getTokeninformation(username)
 			token = tmp.token
