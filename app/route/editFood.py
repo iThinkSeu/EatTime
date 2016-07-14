@@ -42,6 +42,7 @@ def editFood():
 
 
         if request.json.get("disable") is None:
+            print "nothing"
             pass
         else:
             disable = int(request.json.get("disable"))
