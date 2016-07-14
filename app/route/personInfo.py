@@ -37,11 +37,11 @@ def personInfo():
              return jsonify(errorDic)
 
         validOrders = user.order.filter(or_('paystate = 6' , 'paystate = 2')).order_by(orderList.paytime.desc()).limit(30).all()
-        cancelNum = 0.1
-        freeNum = 0.1
-        discountPrice = 0.1
-        totalPrice = 0.1
-        number = 0.1
+        cancelNum = 0
+        freeNum = 0
+        discountPrice = 0
+        totalPrice = 0
+        number = 0
         for item in validOrders:
             number += 1
             if item.paystate == 4:
@@ -51,9 +51,10 @@ def personInfo():
             totalPrice += item.price
             discountPrice += item.payprice
 
-        user.friendly = 60 + freeNum / max(1,number) * 40
-        user.honesty = 100 - cancelNum / max(1,number) * 100
-        user.passion = 60 + (totalPrice - discountPrice) / max(1,number) * 40
+        if number > 0 and totalPrice > 0:
+            user.friendly = 60 + freeNum / number * 40
+            user.honesty = 100 - cancelNum / number * 100
+            user.passion = 60 + (totalPrice - discountPrice) / totalPrice * 40
         db.session.commit()
 
         friendly = user.friendly

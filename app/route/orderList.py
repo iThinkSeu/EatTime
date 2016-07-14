@@ -220,11 +220,11 @@ def customerCancelOrder():
 			reason = '无效的用户'
 
 		validOrders = customer.order.filter(or_('paystate = 6' , 'paystate = 2')).order_by(orderList.paytime.desc()).limit(30).all()
-		cancelNum = 0.1
-		freeNum = 0.1
-		discountPrice = 0.1
-		totalPrice = 0.1
-		number = 0.1
+		cancelNum = 0
+		freeNum = 0
+		discountPrice = 0
+		totalPrice = 0
+		number = 0
 		for item in validOrders:
 			number += 1
 			if item.paystate == 4:
@@ -233,10 +233,10 @@ def customerCancelOrder():
 				freeNum += 1
 			totalPrice += item.price
 			discountPrice += item.payprice
-
-		customer.friendly = 60 + freeNum / number * 40
-		customer.honesty = 100 - cancelNum / number * 100
-		customer.passion = 60 + (totalPrice - discountPrice) / totalPrice * 40
+		if number > 0 and totalPrice > 0:
+			customer.friendly = 60 + freeNum / number * 40
+			customer.honesty = 100 - cancelNum / number * 100
+			customer.passion = 60 + (totalPrice - discountPrice) / totalPrice * 40
 		db.session.add(customer)
 		db.session.commit()
 	except Exception, e:
@@ -365,9 +365,10 @@ def sellerRequestPay():
 						totalPrice += item.price
 						discountPrice += item.payprice
 
-					customer.friendly = 60 + freeNum / number * 40
-					customer.honesty = 100 - cancelNum / number * 100
-					customer.passion = 60 + (totalPrice - discountPrice) / totalPrice * 40
+					if number > 0 and totalPrice > 0:
+						customer.friendly = 60 + freeNum / number * 40
+						customer.honesty = 100 - cancelNum / number * 100
+						customer.passion = 60 + (totalPrice - discountPrice) / totalPrice * 40
 					db.session.add(customer)
 					db.session.commit()
 					#db.session.commit(customer)
@@ -399,7 +400,7 @@ def sellerRequestPay():
 
 @orderList_route.route('/customerConfirmPay', methods = ['POST'])
 def customerConfirmPay():
-	#try:
+	try:
 		db.session.commit()
 		customerToken = request.json['token']
 		orderId = request.json['orderId']
@@ -435,11 +436,11 @@ def customerConfirmPay():
 			reason = '无效的用户'
 
 		validOrders = customer.order.filter(or_('paystate = 6' , 'paystate = 2')).order_by(orderList.paytime.desc()).limit(30).all()
-		cancelNum = 0.1
-		freeNum = 0.1
-		discountPrice = 0.1
-		totalPrice = 0.1
-		number = 0.1
+		cancelNum = 0
+		freeNum = 0
+		discountPrice = 0
+		totalPrice = 0
+		number = 0
 		for item in validOrders:
 			number += 1
 			if item.paystate == 4:
@@ -449,19 +450,24 @@ def customerConfirmPay():
 			totalPrice += item.price
 			discountPrice += item.payprice
 
-		customer.friendly = 60 + freeNum / number * 40
-		customer.honesty = 100 - cancelNum / number * 100
-		customer.passion = 60 + (totalPrice - discountPrice) / totalPrice * 40
+		if number > 0 and totalPrice > 0:
+			customer.friendly = 60 + freeNum / number * 40
+			customer.honesty = 100 - cancelNum / number * 100
+			customer.passion = 60 + (totalPrice - discountPrice) / totalPrice * 40
 		db.session.add(customer)
 		db.session.commit()
 
+	except Exception, e:
+		print e
+		state = 'fail'
+		reason = '服务器异常'
 
 
-		response = jsonify({
+	response = jsonify({
 	                   'state':state,
 	                   'reason':reason
 	                   })
-		return response
+	return response
 
 @orderList_route.route('/ratedOrder', methods = ['POST'])
 def ratedOrder():
