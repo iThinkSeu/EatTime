@@ -24,7 +24,7 @@ def editUserInfo():
 
         location = request.json.get("location")
         if request.json.get("location") != None:
-            user.location = str(location)
+            user.location = location
 
         if request.json.get("personprice") != None:
             user.personprice = float(request.json.get("personprice"))
