@@ -25,7 +25,7 @@ def customerHomePage():
     if customer is not None:
       #没有位置信息，按照评价排序
       if request.json.get("latitude") is None or request.json.get("longitude") is None:
-          pageitems = User.query.order_by(User.scoles.asc()).paginate(int(page), per_page = 5, error_out = False).items
+          pageitems = User.query.order_by(User.scoles.asc()).paginate(int(page), per_page = 10, error_out = False).items
       else:
           user_distance = ordey_by_distance(float(request.json["latitude"]),float(request.json["longitude"]))
           count = 0
@@ -90,7 +90,7 @@ def sellerHomePage():
     seller = get_user_by_token(sellerToken)
     if seller is not None:
       #img = ''
-      pageitems = seller.foods.paginate(page, per_page = 10, error_out = False)
+      pageitems = seller.foods.paginate(page, per_page = 30, error_out = False)
       foodList = [{'foodId':str(item.id), 'foodName':item.name, 'foodMonthSales':str(item.monthsales), 'foodPrice':str(item.price), 'disable': str(1) if item.disable else str(0), 'foodImg': item.foodimgs.first().imageurl if item.foodimgs.first() is not None else ''} for item in pageitems.items]
       state = 'successful'
       reason = ''

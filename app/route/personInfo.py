@@ -6,6 +6,9 @@ import traceback
 import sys
 sys.path.append("..")
 from models import customerUser
+from functions.DBFunctions import *
+from sqlalchemy import or_
+from sqlalchemy import and_
 #from flask.ext.cache import Cache
 
 
@@ -26,11 +29,32 @@ def personInfo():
         token = request.json['token']
         user = customerUser.query.filter_by(token =token).first()
         #没有用户信息
+        print "personInfo: " + token
         if user is None:
              errorDic = {"state":"fail",
                          "reason":"没有此用户"}
              errorDic = dict(errorDic,**emptyDic)
              return jsonify(errorDic)
+
+        validOrders = user.order.filter(or_('paystate = 6' , 'paystate = 2')).order_by(orderList.paytime.desc()).limit(30).all()
+        cancelNum = 0
+        freeNum = 0
+        discountPrice = 0
+        totalPrice = 0
+        number = 0
+        for item in validOrders:
+            number += 1
+            if item.paystate == 4:
+                cancelNum += 1
+            if item.discount == 0:
+                freeNum += 1
+            totalPrice += item.price
+            discountPrice += item.payprice
+
+        customer.friendly = 60 + freeNum / number * 40
+        customer.honesty = 100 - cancelNum / number * 100
+        customer.passion = 60 + (totalPrice - discountPrice) / totalPrice * 40
+        db.session.commit()
 
         friendly = user.friendly
         honesty = user.honesty
@@ -45,7 +69,47 @@ def personInfo():
                      "passion":passion})
 
     except Exception, e:
+        print e
         errorDic = {"state":"fail",
                     "reason":"服务器异常"}
         errorDic = dict(errorDic,**emptyDic)
         return jsonify(errorDic)
+
+
+@personInfo_route.route('/sellerInfo', methods = ['POST'])
+def sellerInfo():
+    try :
+        sellerToken = request.json['token']
+        seller = get_user_by_token(sellerToken)
+        if seller is not None:
+            state = 'successful'
+            reason = ''
+            sellerName = seller.nickname if seller.nickname is not None else ''
+            sellerId = seller.id
+            headImg = seller.headimgurl
+            confirm = seller.confirm
+        else:
+            state = 'fail'
+            reason = '无效的用户'
+            headImg = ''
+            confirm = ''
+            sellerName = ''
+            sellerId = ''
+    except Exception, e:
+        print e
+        state = 'fail'
+        reason = '服务器异常'
+        headImg = ''
+        confirm = ''
+        sellerName = ''
+        sellerId = ''
+    response = jsonify({
+                       'state':state,
+                       'reason':reason,
+                       'headImg':headImg,
+                       'confirm':str(int(confirm)),
+                       'sellerName':sellerName,
+                       'sellerId':sellerId
+                       })
+
+    return response

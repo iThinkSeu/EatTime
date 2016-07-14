@@ -8,6 +8,8 @@ from models import *
 from functions.hashmd5 import *
 from functions.sendMsg import *
 from functions.DBFunctions import *
+from sqlalchemy import or_
+from sqlalchemy import and_
 from datetime import *
 
 
@@ -16,6 +18,7 @@ orderList_route = Blueprint('orderList', __name__)
 @orderList_route.route("/commitOrderList",methods=['POST'])
 def commitOrderList():
 	try:
+		db.session.commit()
 		token = request.json['token']
 		sellerId = request.json.get('sellerId','')
 		foodList = eval(request.json.get('foodList',''))
@@ -58,7 +61,8 @@ def commitOrderList():
 		flag, orderListTemp = customerUser.orderuser(seller, peoplenumber, price, 0)
 
 		orderListTemp.token = generatemd5(str(orderListTemp.id))
-		orderListTemp.add()
+		db.session.add(orderListTemp)
+		db.session.commit()
 
 
 
@@ -77,7 +81,8 @@ def commitOrderList():
 			#minutes = timedelta(minutes=eatTime)
 			planEatTime = datetime.strptime(eatTime, "%Y-%m-%d %H:%M:%S")
 			orderListTemp.planeattime = planEatTime
-			orderListTemp.add()
+			db.session.add(orderListTemp)
+			db.session.commit()
 			olderListid = orderListTemp.token
 			state = 'successful'
 			reason = '已成功下单'
@@ -106,6 +111,7 @@ def commitOrderList():
 @orderList_route.route('/sellerConfirmOrder', methods = ['POST'])
 def sellerConfirmOrder():
 	try:
+		db.session.commit()
 		sellerToken = request.json['token']
 		orderId = request.json['orderId']
 
@@ -117,6 +123,7 @@ def sellerConfirmOrder():
 					state = 'successful'
 					reason = '该订单已经确认'
 					order.paystate = 1
+					db.session.add(order)
 					db.session.commit()
 			else :
 				state = 'fail'
@@ -139,6 +146,7 @@ def sellerConfirmOrder():
 @orderList_route.route("/sellerCancelOrder", methods = ['POST'])
 def sellerCancelOrder():
 	try:
+		db.session.commit()
 		sellerToken = request.json['token']
 		orderId = request.json['orderId']
 		seller = get_user_by_token(sellerToken)
@@ -147,12 +155,15 @@ def sellerCancelOrder():
 			if order is not None:
 				if order.paystate == 0:
 					order.paystate = 3
-					order.add()
+					db.session.add(order)
+					db.session.commit()
+					#order.add()
 					state = 'successful'
 					reason = '订单取消成功'
 				elif order.paystate == 1 or order.paystate == 7:
 					order.paystate = 5
-					order.add()
+					db.session.add(order)
+					db.session.commit()
 					state = 'successful'
 					reason = '订单取消成功'
 				elif order.paystate == 2:
@@ -179,6 +190,7 @@ def sellerCancelOrder():
 @orderList_route.route("/customerCancelOrder", methods = ['POST'])
 def customerCancelOrder():
 	try:
+		db.session.commit()
 		customerToken = request.json['token']
 		orderId = request.json['orderId']
 		customer = get_customer_user_by_token(customerToken)
@@ -187,10 +199,11 @@ def customerCancelOrder():
 			if order is not None:
 				if order.paystate == 0:
 					order.paystate = 4
-					order.add()
+					db.session.add(order)
+					db.session.commit()
 					state = 'successful'
 					reason = '取消订单成功'
-				elif order.paystate == 1 or order.paytstate == 7:
+				elif order.paystate == 1 or order.paystate == 7:
 					state = 'fail'
 					reason = '对不起，您现在无权取消订单'
 				elif order.paystate == 2:
@@ -206,7 +219,7 @@ def customerCancelOrder():
 			state = 'fail'
 			reason = '无效的用户'
 
-		validOrders = customer.order.filter(_or('paysate = 6' , 'paystate = 2')).order_by(orderList.paydatetime.desc()).limit(30).all()
+		validOrders = customer.order.filter(or_('paystate = 6' , 'paystate = 2')).order_by(orderList.paytime.desc()).limit(30).all()
 		cancelNum = 0
 		freeNum = 0
 		discountPrice = 0
@@ -224,6 +237,7 @@ def customerCancelOrder():
 		customer.friendly = 60 + freeNum / number * 40
 		customer.honesty = 100 - cancelNum / number * 100
 		customer.passion = 60 + (totalPrice - discountPrice) / totalPrice * 40
+		db.session.add(customer)
 		db.session.commit()
 	except Exception, e:
 		print e
@@ -238,16 +252,17 @@ def customerCancelOrder():
 @orderList_route.route("/sellerOrder/<int:id>", methods = ['POST'])
 def sellerOrder(id):
 	try:
+		db.session.commit()
 		sellerToken = request.json['token']
 		page = int(request.json['page'])
 		seller = get_user_by_token(sellerToken)
 		if seller is not None:
 			if id == 0:
-				pageitems = seller.beordered.filter("paystate = 0").order_by(orderList.ordertime.desc()).paginate(page, per_page = 3, error_out = False)
+				pageitems = seller.beordered.filter("paystate = 0").order_by(orderList.ordertime.desc()).paginate(page, per_page = 10, error_out = False)
 			elif id == 1:
-				pageitems = seller.beordered.filter(or_("paystate = 1" , "paystate = 7")).order_by(orderList.planeattime.desc()).paginate(page, per_page = 3, error_out = False)
+				pageitems = seller.beordered.filter(or_("paystate = 1" , "paystate = 7")).order_by(orderList.planeattime.desc()).paginate(page, per_page = 10, error_out = False)
 			else:
-				pageitems = seller.beordered.filter(or_("paystate = 2", "paystate = 6")).order_by(orderList.paytime.desc()).paginate(page, per_page = 3, error_out = False)
+				pageitems = seller.beordered.filter(or_("paystate = 2", "paystate = 6")).order_by(orderList.paytime.desc()).paginate(page, per_page = 10, error_out = False)
 			headImg = ''
 			availableOrderView = [{'orderId':item.token, 'planeEatTime':item.planeattime.strftime("%Y-%m-%d %H:%M:%S"), 'orderPrice':str(item.price), 'orderPayPrice':str(item.payprice) if item.payprice is not None else '', 'orderTime':item.ordertime.strftime("%Y-%m-%d %H:%M:%S"), 'orderPayTime':item.paytime.strftime("%Y-%m-%d %H:%M:%S") if item.paytime is not None else '', 'orderPeopleNumber':str(item.peoplenumber), 'customerId':str(item.orderuser.id), 'customerName':item.orderuser.username, 'customerHeadImg':headImg, 'customerHonesty':str(item.orderuser.honesty), 'customerFriendly':str(item.orderuser.friendly), 'customerPassion':str(item.orderuser.passion), 'foodName':','.join([foodi.foods.name for foodi in item.foodincludes]), 'foodCounts':str(sum([foodi.number for foodi in item.foodincludes]))} for item in pageitems.items]
 			state = 'successful'
@@ -278,17 +293,18 @@ def sellerOrder(id):
 @orderList_route.route("/customerOrder/<int:id>", methods = ['POST'])
 def customerOrder(id):
 	#try:
+		db.session.commit()
 		customerToken = request.json['token']
 		page = int(request.json['page'])
 		customer = get_customer_user_by_token(customerToken)
-		if cusomer is not None:
+		if customer is not None:
 			if id == 0:
-				pageitems = customer.order.filter("paystate = 0").order_by(orderList.ordertime.desc()).paginate(page, per_page = 3, error_out = False)
+				pageitems = customer.order.filter("paystate = 0").order_by(orderList.ordertime.desc()).paginate(page, per_page = 10, error_out = False)
 			elif id == 1:
-				pageitems = customer.order.filter(or_("paystate = 1" , "paystate = 7")).order_by(orderList.planeattime.desc()).paginate(page, per_page = 3, error_out = False)
+				pageitems = customer.order.filter(or_("paystate = 1" , "paystate = 7")).order_by(orderList.planeattime.desc()).paginate(page, per_page = 10, error_out = False)
 			else:
-				pageitems = customer.order.filter(or_("paystate = 2", "paystate = 6")).order_by(orderList.paytime.desc()).paginate(page, per_page = 3, error_out = False)
-			availableOrderView = [{'orderId':item.token, 'orderPlanEatTime':item.planeattime.strftime("%Y-%m-%d %H:%M:%S"), 'orderPrice':str(item.price), 'orderPayPrice':str(item.payprice) if item.payprice is not None else '', 'orderTime':item.ordertime.strftime("%Y-%m-%d %H:%M:%S"), 'orderPayTime':item.paytime.strftime("%Y-%m-%d %H:%M:%S") if item.paytime is not None else '', 'orderPeopleNumber':str(item.peoplenumber), 'sellerId':str(item.beordereduser.id), 'sellerName':item.beordereduser.username, 'sellerHeadImg':item.beordereduser.headimgurl, 'sellerScores':str(item.beordereduser.scoles), 'foodName':','.join([foodi.foods.name for foodi in item.foodincludes]), 'foodCounts':str(sum([foodi.number for foodi in item.foodincludes]))} for item in pageitems.items]
+				pageitems = customer.order.filter(or_("paystate = 2", "paystate = 6")).order_by(orderList.paytime.desc()).paginate(page, per_page = 10, error_out = False)
+			availableOrderView = [{'paystate':str(item.paystate),'orderId':item.token, 'orderPlanEatTime':item.planeattime.strftime("%Y-%m-%d %H:%M:%S"), 'orderPrice':str(item.price), 'orderPayPrice':str(item.payprice) if item.payprice is not None else '', 'orderTime':item.ordertime.strftime("%Y-%m-%d %H:%M:%S"), 'orderPayTime':item.paytime.strftime("%Y-%m-%d %H:%M:%S") if item.paytime is not None else '', 'orderPeopleNumber':str(item.peoplenumber), 'sellerId':str(item.beordereduser.id), 'sellerName':item.beordereduser.username, 'sellerHeadImg':item.beordereduser.headimgurl, 'sellerScores':str(item.beordereduser.scoles), 'foodName':','.join([foodi.foods.name for foodi in item.foodincludes]), 'foodCounts':str(sum([foodi.number for foodi in item.foodincludes]))} for item in pageitems.items]
 			state = 'successful'
 			reason = ''
 			response = jsonify({'state':state,
@@ -316,6 +332,7 @@ def customerOrder(id):
 @orderList_route.route('/sellerRequestPay', methods = ['POST'])
 def sellerRequestPay():
 	try :
+		db.session.commit()
 		sellerToken = request.json['token']
 		orderId = request.json['orderId']
 		discount = request.json['discount']
@@ -333,7 +350,7 @@ def sellerRequestPay():
 					#order.paytime = datetime.now()
 					order.paystate =  7
 					customer = order.orderuser
-					validOrders = customer.order.filter(_or('paysate = 6' , 'paystate = 2')).order_by(orderList.paydatetime.desc()).limit(30).all()
+					validOrders = customer.order.filter(or_('paystate = 6' , 'paystate = 2')).order_by(orderList.paytime.desc()).limit(30).all()
 					cancelNum = 0
 					freeNum = 0
 					discountPrice = 0
@@ -351,6 +368,7 @@ def sellerRequestPay():
 					customer.friendly = 60 + freeNum / number * 40
 					customer.honesty = 100 - cancelNum / number * 100
 					customer.passion = 60 + (totalPrice - discountPrice) / totalPrice * 40
+					db.session.add(customer)
 					db.session.commit()
 					#db.session.commit(customer)
 					state = 'successful'
@@ -382,6 +400,7 @@ def sellerRequestPay():
 @orderList_route.route('/customerConfirmPay', methods = ['POST'])
 def customerConfirmPay():
 	try:
+		db.session.commit()
 		customerToken = request.json['token']
 		orderId = request.json['orderId']
 		orderScores = request.json.get('orderScores', '')
@@ -400,6 +419,7 @@ def customerConfirmPay():
 						reason = '感谢您的支付和评价'
 						order.paystate = 6
 						order.scores = float(orderScores)
+					db.session.add(order)
 					db.session.commit()
 				elif order.paystate == 1:
 					state = 'fail'
@@ -414,7 +434,7 @@ def customerConfirmPay():
 			state = 'fail'
 			reason = '无效的用户'
 
-		validOrders = customer.order.filter(_or('paysate = 6' , 'paystate = 2')).order_by(orderList.paydatetime.desc()).limit(30).all()
+		validOrders = customer.order.filter(or_('paystate = 6' , 'paystate = 2')).order_by(orderList.paytime.desc()).limit(30).all()
 		cancelNum = 0
 		freeNum = 0
 		discountPrice = 0
@@ -432,6 +452,7 @@ def customerConfirmPay():
 		customer.friendly = 60 + freeNum / number * 40
 		customer.honesty = 100 - cancelNum / number * 100
 		customer.passion = 60 + (totalPrice - discountPrice) / totalPrice * 40
+		db.session.add(customer)
 		db.session.commit()
 
 	except Exception, e:
@@ -448,6 +469,7 @@ def customerConfirmPay():
 @orderList_route.route('/ratedOrder', methods = ['POST'])
 def ratedOrder():
 	try :
+		db.session.commit()
 		customerToken = request.json['token']
 		orderId = request.json['orderId']
 		orderScores = request.json['orderScores']
@@ -458,6 +480,7 @@ def ratedOrder():
 				if order.paystate == 2:
 					order.scores = float(orderScores)
 					order.paystate = 6
+					db.session.add(order)
 					db.session.commit()
 					state = 'successful'
 					reason = '感谢您的评价'
