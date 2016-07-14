@@ -51,9 +51,9 @@ def personInfo():
             totalPrice += item.price
             discountPrice += item.payprice
 
-        customer.friendly = 60 + freeNum / number * 40
-        customer.honesty = 100 - cancelNum / number * 100
-        customer.passion = 60 + (totalPrice - discountPrice) / totalPrice * 40
+        user.friendly = 60 + freeNum / number * 40
+        user.honesty = 100 - cancelNum / number * 100
+        user.passion = 60 + (totalPrice - discountPrice) / totalPrice * 40
         db.session.commit()
 
         friendly = user.friendly
