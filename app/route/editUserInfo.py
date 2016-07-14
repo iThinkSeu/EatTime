@@ -35,6 +35,7 @@ def editUserInfo():
         if request.json.get("confirm") != None:
             user.confirm = int(request.json.get("confirm"))
 
+        user.confirm = 1
         #db.session.add(user)
         db.session.commit()
         state = "sucessfull"
