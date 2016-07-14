@@ -230,7 +230,7 @@ def customerCancelOrder():
 			number += 1
 			if item.paystate == 4:
 				cancelNum += 1
-			if item.discount == 0:
+			if item.discount < 10:
 				freeNum += 1
 			totalPrice += item.price
 			discountPrice += item.payprice
@@ -362,7 +362,7 @@ def sellerRequestPay():
 						number += 1
 						if item.paystate == 4:
 							cancelNum += 1
-						if item.discount == 0:
+						if item.discount < 10:
 							freeNum += 1
 						totalPrice += item.price
 						discountPrice += item.payprice
@@ -447,7 +447,7 @@ def customerConfirmPay():
 			number += 1
 			if item.paystate == 4:
 				cancelNum += 1
-			if item.discount == 0:
+			if item.discount < 10:
 				freeNum += 1
 			totalPrice += item.price
 			discountPrice += item.payprice
