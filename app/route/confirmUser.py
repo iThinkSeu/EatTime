@@ -28,6 +28,7 @@ def confirmUser():
             pass
         else:
             user.sex = request.json["userSex"]
+        user.confirm = 1
         db.session.add(user)
         db.session.commit()
 
