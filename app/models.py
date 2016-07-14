@@ -8,11 +8,11 @@ from sqlalchemy import or_
 from sqlalchemy import and_
 from dbSetting import create_app,db,sqlurl
 
-
+"""
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI']=sqlurl
 db = SQLAlchemy(app)
-
+"""
 
 #数据库升级时需要使用，平常不执行下面代码，创建app
 if __name__ == '__main__':
