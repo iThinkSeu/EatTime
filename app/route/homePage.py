@@ -39,7 +39,7 @@ def customerHomePage():
           if len(users) < backCount:
               backCount = len(users)
 
-      sellerView = [{'sellerId':item.token, 'sellerName':item.username, 'location':item.location if item.location is not None else '', 'monthSales':sum([fitem.monthsales for fitem in item.foods]), 'scores':item.scoles, 'personPrice':item.personprice, 'foodImg':item.foods.first().foodimgs.first().imageurl if item.foods.first() is not None and item.foods.first().foodimgs.first() is not None else '', 'headImg':item.headimgurl if item.headimgurl is not None else ''} for item in pageitems]
+      sellerView = [{'sellerId':item.token, 'sellerName':item.nickname, 'location':item.location if item.location is not None else '', 'monthSales':sum([fitem.monthsales for fitem in item.foods]), 'scores':item.scoles, 'personPrice':item.personprice, 'foodImg':item.foods.first().foodimgs.first().imageurl if item.foods.first() is not None and item.foods.first().foodimgs.first() is not None else '', 'headImg':item.headimgurl if item.headimgurl is not None else ''} for item in pageitems]
 
       #收到坐标位置，添加返回字段distance
       if request.json.get("latitude") is None and request.json.get("longitude") is None:

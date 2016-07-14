@@ -33,7 +33,7 @@ def userInfo():
             errorDic = dict(errorDic,**emptyDic)
             return jsonify(errorDic)
 
-        username = user.username
+        username = user.nickname
         homeImgUrl = user.homeimgurl
         isconfirm = user.confirm
         headimgurl = user.headimgurl
