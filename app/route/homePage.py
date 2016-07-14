@@ -15,6 +15,7 @@ homePage_route = Blueprint('homePage', __name__)
 
 @homePage_route.route("/customerHomePage", methods=['POST'])
 def customerHomePage():
+  db.session.commit()
 
   #位置排序时，返回的商家数量
   backCount = 20
@@ -85,6 +86,7 @@ def customerHomePage():
 @homePage_route.route("/sellerHomePage", methods = ['POST'])
 def sellerHomePage():
   try:
+    db.session.commit()
     sellerToken = request.json['token']
     page = int(request.json['page'])
     seller = get_user_by_token(sellerToken)

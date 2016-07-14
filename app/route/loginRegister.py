@@ -16,6 +16,7 @@ loginRegister_route = Blueprint('loginRegister', __name__)
 @loginRegister_route.route('/sendsmscode', methods=['POST'])
 def send_sms_code():
 	try:
+		db.session.commit()
 		phone = request.json['phone']
 		type_flag = request.json['type']
 		u = User.query.filter_by(username=phone).first()
@@ -54,6 +55,7 @@ def send_sms_code():
 @loginRegister_route.route('/registerphone', methods=['POST'])
 def register_user():
 	try:
+		db.session.commit()
 		id = ''
 		token = ''
 		phone = request.json['phone']
@@ -88,6 +90,7 @@ def register_user():
 @loginRegister_route.route('/sendsmscodecus', methods=['POST'])
 def sendsmscodecus():
 	try:
+		db.session.commit()
 		phone = request.json['phone']
 		type_flag = request.json['type']
 		u = customerUser.query.filter_by(username=phone).first()
@@ -126,6 +129,7 @@ def sendsmscodecus():
 @loginRegister_route.route('/registerphonecus', methods=['POST'])
 def registerphonecus():
 	try:
+		db.session.commit()
 		id = ''
 		token = ''
 		phone = request.json['phone']
@@ -301,6 +305,7 @@ def login():
 @loginRegister_route.route("/appregister",methods=['POST'])
 def appregister():
 	try:
+		db.session.commit()
 		username = request.json.get('username','')
 		password = request.json.get('password','')
 		token = ''
@@ -331,6 +336,7 @@ def appregister():
 @loginRegister_route.route("/applogin",methods=['POST'])
 def applogin():
 	try:
+		db.session.commit()
 		username = request.json['username']
 		password = request.json['password']
 		u=User(username=username,password=password)
@@ -367,6 +373,7 @@ def applogin():
 @loginRegister_route.route("/cuslogin",methods=['POST'])
 def cuslogin():
 	try:
+		db.session.commit()
 		username = request.json['username']
 		password = request.json['password']
 		u=customerUser(username=username,password=password)
