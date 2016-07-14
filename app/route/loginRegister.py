@@ -64,7 +64,7 @@ def register_user():
 		u = User.query.filter_by(username = str(phone)).first()
 		if u is None:
 			p = checkMsg.query.filter_by(phone=str(phone)).first()
-			if p is None:
+			if p is None or p.code != str(code) or (datetime.now()-p.timestamp > timedelta(minutes=5)):
 				state = 'fail'
 				reason = '验证码无效'
 			else:
@@ -143,9 +143,8 @@ def registerphonecus():
 				state = 'successful'
 				reason = ''
 				token = hashToken(str(phone), password+str(code))
-				u = User(username = phone, password = password, token = token)
+				u = customerUser(username = phone, password = password, token = token)
 				u.add()
-				id = getuserinformation(token).id
 
 
 		else:

@@ -160,7 +160,7 @@ class customerUser(db.Model):
 
 	def add(self):
 		try:
-			tempuser = User.query.filter_by(username=self.username).first()
+			tempuser = customerUser.query.filter_by(username=self.username).first()
 			if tempuser is None:
 				db.session.add(self)
 				db.session.commit()
@@ -181,13 +181,13 @@ class customerUser(db.Model):
 			db.session.rollback()
 			return 2
 	def isExisted(self):
-		tempuser = User.query.filter_by(username=self.username,password=self.password).first()
+		tempuser = customerUser.query.filter_by(username=self.username,password=self.password).first()
 		if tempuser is None:
 			return 0
 		else:
 			return 1
 	def isExistedusername(self):
-		tempuser = User.query.filter_by(username = self.username).first()
+		tempuser = customerUser.query.filter_by(username = self.username).first()
 		if tempuser is None:
 			return 0
 		else:
