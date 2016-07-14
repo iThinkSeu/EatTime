@@ -399,7 +399,7 @@ def sellerRequestPay():
 
 @orderList_route.route('/customerConfirmPay', methods = ['POST'])
 def customerConfirmPay():
-	try:
+	#try:
 		db.session.commit()
 		customerToken = request.json['token']
 		orderId = request.json['orderId']
@@ -455,16 +455,13 @@ def customerConfirmPay():
 		db.session.add(customer)
 		db.session.commit()
 
-	except Exception, e:
-		print e
-		state = 'fail'
-		reason = '服务器异常'
 
-	response = jsonify({
+
+		response = jsonify({
 	                   'state':state,
 	                   'reason':reason
 	                   })
-	return response
+		return response
 
 @orderList_route.route('/ratedOrder', methods = ['POST'])
 def ratedOrder():
