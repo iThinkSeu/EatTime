@@ -304,6 +304,7 @@ def login():
 @loginRegister_route.route("/appregister",methods=['POST'])
 def appregister():
 	try:
+		db.session.commit()
 		username = request.json.get('username','')
 		password = request.json.get('password','')
 		token = ''
@@ -334,6 +335,7 @@ def appregister():
 @loginRegister_route.route("/applogin",methods=['POST'])
 def applogin():
 	try:
+		db.session.commit()
 		username = request.json['username']
 		password = request.json['password']
 		u=User(username=username,password=password)
@@ -370,6 +372,7 @@ def applogin():
 @loginRegister_route.route("/cuslogin",methods=['POST'])
 def cuslogin():
 	try:
+		db.session.commit()
 		username = request.json['username']
 		password = request.json['password']
 		u=customerUser(username=username,password=password)
