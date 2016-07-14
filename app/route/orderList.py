@@ -220,11 +220,11 @@ def customerCancelOrder():
 			reason = '无效的用户'
 
 		validOrders = customer.order.filter(or_('paystate = 6' , 'paystate = 2')).order_by(orderList.paytime.desc()).limit(30).all()
-		cancelNum = 0
-		freeNum = 0
-		discountPrice = 0
-		totalPrice = 0
-		number = 0
+		cancelNum = 0.1
+		freeNum = 0.1
+		discountPrice = 0.1
+		totalPrice = 0.1
+		number = 0.1
 		for item in validOrders:
 			number += 1
 			if item.paystate == 4:
@@ -351,11 +351,11 @@ def sellerRequestPay():
 					order.paystate =  7
 					customer = order.orderuser
 					validOrders = customer.order.filter(or_('paystate = 6' , 'paystate = 2')).order_by(orderList.paytime.desc()).limit(30).all()
-					cancelNum = 0
-					freeNum = 0
-					discountPrice = 0
-					totalPrice = 0
-					number = 0
+					cancelNum = 0.1
+					freeNum = 0.1
+					discountPrice = 0.1
+					totalPrice = 0.1
+					number = 0.1
 					for item in validOrders:
 						number += 1
 						if item.paystate == 4:
@@ -435,11 +435,11 @@ def customerConfirmPay():
 			reason = '无效的用户'
 
 		validOrders = customer.order.filter(or_('paystate = 6' , 'paystate = 2')).order_by(orderList.paytime.desc()).limit(30).all()
-		cancelNum = 0
-		freeNum = 0
-		discountPrice = 0
-		totalPrice = 0
-		number = 0
+		cancelNum = 0.1
+		freeNum = 0.1
+		discountPrice = 0.1
+		totalPrice = 0.1
+		number = 0.1
 		for item in validOrders:
 			number += 1
 			if item.paystate == 4:
