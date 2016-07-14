@@ -378,7 +378,7 @@ def cuslogin():
 		u=customerUser(username=username,password=password)
 		if u.isExisted():
 			state = 'successful'
-			tmp = getTokeninformation(username)
+			tmp = customerUser.query.filter_by(username=username).first()
 			token = tmp.token
 			id = tmp.id
 			reason = ''
