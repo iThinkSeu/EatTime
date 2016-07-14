@@ -192,6 +192,7 @@ def customerCancelOrder():
 	try:
 		db.session.commit()
 		customerToken = request.json['token']
+		print customerToken
 		orderId = request.json['orderId']
 		customer = get_customer_user_by_token(customerToken)
 		if customer is not None:
