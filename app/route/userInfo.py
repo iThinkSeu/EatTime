@@ -33,7 +33,7 @@ def userInfo():
             errorDic = dict(errorDic,**emptyDic)
             return jsonify(errorDic)
 
-        username = user.nickname
+        username = user.nickname if user.nickname is not None else ""
         homeImgUrl = user.homeimgurl
         isconfirm = user.confirm
         headimgurl = user.headimgurl
@@ -56,6 +56,7 @@ def userInfo():
                 imgurl =""
             else:
                 imgurl = food.foodimgs.first().imageurl
+		print imgurl
             foodDic = {"foodid":food.id,
                         "foodname":food.name,
                         "monthSales":food.monthsales,

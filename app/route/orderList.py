@@ -14,7 +14,7 @@ from datetime import *
 
 
 orderList_route = Blueprint('orderList', __name__)
-
+#提交订单
 @orderList_route.route("/commitOrderList",methods=['POST'])
 def commitOrderList():
 	try:

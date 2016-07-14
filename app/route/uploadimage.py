@@ -168,10 +168,10 @@ def uploadavatar():
 				fp = thumnail_enhanced(fp, 200, 200)
 				if fp:
 					fp.save(dst + '_thumbnail.jpg')
-			if type == "10" or type == "11":
+			if type == "10" or type == "11" or type=="12" or type=="13" or type=="14" or type=="15":
 				fp = Image.open(dst)
 				# fp.thumbnail((200,200))
-				fp = thumnail_enhanced(fp, 200, 200)
+				fp = thumnail_enhanced(fp, 400, 400)
 				if fp:
 					fp.save(dst + '_thumbnail.jpg')
 
