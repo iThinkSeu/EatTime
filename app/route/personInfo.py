@@ -43,6 +43,7 @@ def personInfo():
         totalPrice = 0
         number = 0
         for item in validOrders:
+            print item.discount
             number += 1
             if item.paystate == 4:
                 cancelNum += 1
