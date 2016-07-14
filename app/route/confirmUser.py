@@ -20,6 +20,7 @@ def confirmUser():
                         "reason":"用户不存在"}
             return jsonify(errorDic)
         user.nickname = request.json.get("userName","")
+        print user.nickname
         user.identity = str(request.json.get("userIdentity",""))
         user.location = request.json.get("userLocation","")
         user.altitude = float(request.json.get("latitude",0))
@@ -28,7 +29,6 @@ def confirmUser():
             pass
         else:
             user.sex = request.json["userSex"]
-        user.confirm = 1
         db.session.add(user)
         db.session.commit()
 
